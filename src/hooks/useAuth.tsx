@@ -4,7 +4,7 @@ import ServiceApi from '../services/api';
 export interface User {
     id: string;
     email: string;
-    name: string;
+    fullName: string;
     role: 'ADMIN' | 'USER';
     avatar?: string;
 }
