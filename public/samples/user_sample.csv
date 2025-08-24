@@ -1,0 +1,10 @@
+email,fullName,roleId,phoneNumber,address
+student1@example.com,Nguyễn Văn A,3,0123456789,Hà Nội
+student2@example.com,Trần Thị B,3,0987654321,TP.HCM
+student3@example.com,Lê Văn C,3,0111222333,Đà Nẵng
+teacher1@example.com,Phạm Thị D,2,0444555666,Hà Nội
+teacher2@example.com,Hoàng Văn E,2,0777888999,TP.HCM
+admin1@example.com,Vũ Thị F,1,0333444555,Hà Nội
+student4@example.com,Đỗ Văn G,3,0666777888,Cần Thơ
+student5@example.com,Bùi Thị H,3,0999000111,Hải Phòng
+teacher3@example.com,Ngô Văn I,2,0222333444,Đà Nẵng

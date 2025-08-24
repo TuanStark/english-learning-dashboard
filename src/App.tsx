@@ -1,0 +1,90 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/hooks/useAuth';
+import { ThemeProvider } from '@/hooks/useTheme';
+import { AuthWrapper } from '@/components/AuthWrapper';
+import { Layout } from '@/components/layout/Layout';
+import Login from '@/pages/Login';
+import { Dashboard } from '@/pages/Dashboard';
+import { Users } from '@/pages/Users';
+import { Roles } from '@/pages/Roles';
+import { Vocabulary } from '@/pages/Vocabulary';
+import { VocabularyTopics } from '@/pages/VocabularyTopics';
+import { VocabularyExamples } from '@/pages/VocabularyExamples';
+import { Exams } from '@/pages/Exams';
+import { Questions } from '@/pages/Questions';
+import { ExamAttempts } from '@/pages/ExamAttempts';
+import { Grammar } from '@/pages/Grammar';
+import { GrammarExamples } from '@/pages/GrammarExamples';
+import { BlogPosts } from '@/pages/BlogPosts';
+import { BlogCategories } from '@/pages/BlogCategories';
+import { BlogComments } from '@/pages/BlogComments';
+import { LearningPaths } from '@/pages/LearningPaths';
+import { AIExplanations } from '@/pages/AIExplanations';
+import { UserProgress } from '@/pages/UserProgress';
+import { Settings } from '@/pages/Settings';
+import { Unauthorized } from '@/pages/Unauthorized';
+import { ImportDemo } from '@/pages/ImportDemo';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/import-demo" element={<ImportDemo />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route
+              path="/*"
+              element={
+                <AuthWrapper>
+                  <Layout />
+                </AuthWrapper>
+              }
+            >
+              {/* Dashboard */}
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="" element={<Navigate to="/dashboard" replace />} />
+
+              {/* User Management */}
+              <Route path="users" element={<Users />} />
+              <Route path="roles" element={<Roles />} />
+
+              {/* Vocabulary Management */}
+              <Route path="vocabulary" element={<Vocabulary />} />
+              <Route path="vocabulary-topics" element={<VocabularyTopics />} />
+              <Route path="vocabulary-examples" element={<VocabularyExamples />} />
+
+              {/* Exam Management */}
+              <Route path="exams" element={<Exams />} />
+              <Route path="questions" element={<Questions />} />
+              <Route path="exam-attempts" element={<ExamAttempts />} />
+
+              {/* Grammar Management */}
+              <Route path="grammar" element={<Grammar />} />
+              <Route path="grammar-examples" element={<GrammarExamples />} />
+
+              {/* Blog Management */}
+              <Route path="blog-posts" element={<BlogPosts />} />
+              <Route path="blog-categories" element={<BlogCategories />} />
+              <Route path="blog-comments" element={<BlogComments />} />
+
+              {/* Learning Path Management */}
+              <Route path="learning-paths" element={<LearningPaths />} />
+
+              {/* AI & Analytics */}
+              <Route path="ai-explanations" element={<AIExplanations />} />
+              <Route path="user-progress" element={<UserProgress />} />
+
+              {/* Settings */}
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;

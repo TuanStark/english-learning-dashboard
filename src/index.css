@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Test CSS để đảm bảo styling hoạt động */
+.test-red {
+  background-color: red !important;
+}
