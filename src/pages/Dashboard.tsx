@@ -39,7 +39,6 @@ export const Dashboard: React.FC = () => {
   const [learningPathProgress, setLearningPathProgress] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState('7d');
 
   useEffect(() => {
     const fetchDashboardData = async () => {

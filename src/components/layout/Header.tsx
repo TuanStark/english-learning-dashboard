@@ -6,10 +6,7 @@ import {
   Menu, 
   LogOut, 
   User, 
-  Settings, 
-  Search,
   BookOpen,
-  Zap,
   ChevronDown,
   Shield,
   Crown

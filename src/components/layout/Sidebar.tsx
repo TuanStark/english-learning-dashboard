@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard,
   BookOpen,
@@ -18,22 +19,14 @@ import {
   Target,
   MessageSquare,
   Brain,
-  GraduationCap,
   BarChart3,
-  Star,
   Lightbulb,
-  Database,
-  UserCheck,
   BookOpenCheck,
   MessageCircle,
   Route,
   GitBranch,
   Bot,
   TrendingUp,
-  Award,
-  Calendar,
-  Clock,
-  Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -48,104 +41,169 @@ interface NavigationItem {
   icon: any;
   children?: NavigationItem[];
   badge?: string;
+  roles?: string[]; // Roles that can access this menu item
 }
 
+// Single navigation with role-based access control
 const navigation: NavigationItem[] = [
   { 
     name: 'Dashboard', 
     href: '/dashboard', 
     icon: LayoutDashboard,
-    badge: 'Overview'
+    badge: 'Overview',
+    roles: ['admin', 'teacher', 'student'] // All roles can access dashboard
   },
   
-  // User Management
+  // User Management - Admin only
   {
     name: 'User Management',
     icon: Users,
+    roles: ['admin'],
     children: [
-      { name: 'Users', href: '/users', icon: Users, badge: 'Manage' },
-      { name: 'Roles', href: '/roles', icon: Shield, badge: 'Permissions' },
-      { name: 'User Progress', href: '/user-progress', icon: TrendingUp, badge: 'Analytics' },
+      { name: 'Users', href: '/users', icon: Users, badge: 'Manage', roles: ['admin'] },
+      { name: 'Roles', href: '/roles', icon: Shield, badge: 'Permissions', roles: ['admin'] },
+      { name: 'User Progress', href: '/user-progress', icon: TrendingUp, badge: 'Analytics', roles: ['admin'] },
     ]
   },
 
-  // Vocabulary Management
+  // Student Management - Admin & Teacher
+  {
+    name: 'Student Management',
+    icon: Users,
+    roles: ['admin', 'teacher'],
+    children: [
+      { name: 'All Students', href: '/users', icon: Users, badge: 'Manage', roles: ['admin'] },
+      { name: 'My Students', href: '/my-students', icon: Users, badge: 'Students', roles: ['teacher'] },
+      { name: 'Student Progress', href: '/student-progress', icon: TrendingUp, badge: 'Analytics', roles: ['admin', 'teacher'] },
+    ]
+  },
+
+  // Vocabulary - Admin & Teacher can manage, Student can learn
   {
     name: 'Vocabulary',
     icon: Book,
+    roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Vocabulary Words', href: '/vocabulary', icon: Book, badge: 'Words' },
-      { name: 'Vocabulary Topics', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Categories' },
-      { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage' },
+      { name: 'Vocabulary Words', href: '/vocabulary', icon: Book, badge: 'Words', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Vocabulary Topics', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Categories', roles: ['admin', 'teacher'] },
+      { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage', roles: ['admin', 'teacher'] },
     ]
   },
 
-  // Exam Management
+  // Exam System - Admin & Teacher can manage, Student can take
   {
     name: 'Exam System',
     icon: FileText,
+    roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Exams', href: '/exams', icon: FileText, badge: 'Tests' },
-      { name: 'Questions', href: '/questions', icon: HelpCircle, badge: 'Items' },
-      { name: 'Exam Attempts', href: '/exam-attempts', icon: Target, badge: 'Results' },
+      { name: 'Exams', href: '/exams', icon: FileText, badge: 'Tests', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Questions', href: '/questions', icon: HelpCircle, badge: 'Items', roles: ['admin', 'teacher'] },
+      { name: 'Exam Attempts', href: '/exam-attempts', icon: Target, badge: 'Results', roles: ['admin', 'teacher', 'student'] },
     ]
   },
 
-  // Grammar Management
+  // Grammar - Admin & Teacher can manage, Student can learn
   {
     name: 'Grammar',
     icon: BookOpen,
+    roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Grammar Rules', href: '/grammar', icon: BookOpen, badge: 'Rules' },
-      { name: 'Grammar Examples', href: '/grammar-examples', icon: Lightbulb, badge: 'Examples' },
+      { name: 'Grammar Rules', href: '/grammar', icon: BookOpen, badge: 'Rules', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Grammar Examples', href: '/grammar-examples', icon: Lightbulb, badge: 'Examples', roles: ['admin', 'teacher'] },
     ]
   },
 
-  // Blog Management
+  // Content Management - Admin & Teacher
   {
     name: 'Content Management',
     icon: MessageSquare,
+    roles: ['admin', 'teacher'],
     children: [
-      { name: 'Blog Posts', href: '/blog-posts', icon: FileText, badge: 'Articles' },
-      { name: 'Blog Categories', href: '/blog-categories', icon: FolderOpen, badge: 'Topics' },
-      { name: 'Blog Comments', href: '/blog-comments', icon: MessageCircle, badge: 'Feedback' },
+      { name: 'Blog Posts', href: '/blog-posts', icon: FileText, badge: 'Articles', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Blog Categories', href: '/blog-categories', icon: FolderOpen, badge: 'Topics', roles: ['admin', 'teacher'] },
+      { name: 'Blog Comments', href: '/blog-comments', icon: MessageCircle, badge: 'Feedback', roles: ['admin', 'teacher'] },
     ]
   },
 
-  // Learning Paths
+  // Learning Paths - All roles but different access levels
   {
     name: 'Learning Paths',
     icon: Route,
+    roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Learning Paths', href: '/learning-paths', icon: Route, badge: 'Paths' },
-      { name: 'Path Steps', href: '/path-steps', icon: GitBranch, badge: 'Steps' },
+      { name: 'Learning Paths', href: '/learning-paths', icon: Route, badge: 'Paths', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Path Steps', href: '/path-steps', icon: GitBranch, badge: 'Steps', roles: ['admin', 'teacher'] },
+      { name: 'Create Path', href: '/create-path', icon: GitBranch, badge: 'New', roles: ['admin', 'teacher'] },
     ]
   },
 
-  // AI & Analytics
+  // AI & Analytics - Admin & Teacher
   {
     name: 'AI & Analytics',
     icon: Brain,
+    roles: ['admin', 'teacher'],
     children: [
-      { name: 'AI Explanations', href: '/ai-explanations', icon: Bot, badge: 'AI' },
-      { name: 'Dashboard Stats', href: '/dashboard-stats', icon: BarChart3, badge: 'Analytics' },
+      { name: 'AI Explanations', href: '/ai-explanations', icon: Bot, badge: 'AI', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Dashboard Stats', href: '/dashboard-stats', icon: BarChart3, badge: 'Analytics', roles: ['admin', 'teacher'] },
     ]
   },
 
-  // System Tools
+  // System Tools - Admin only
   {
     name: 'System Tools',
     icon: Settings,
+    roles: ['admin'],
     children: [
-      { name: 'Import Demo', href: '/import-demo', icon: Upload, badge: 'Demo' },
-      { name: 'Settings', href: '/settings', icon: Settings, badge: 'Config' },
+      { name: 'Import Demo', href: '/import-demo', icon: Upload, badge: 'Demo', roles: ['admin'] },
+      { name: 'Settings', href: '/settings', icon: Settings, badge: 'Config', roles: ['admin'] },
     ]
   },
 ];
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<string[]>(['User Management', 'Vocabulary', 'Exam System']);
+  const { user } = useAuth();
+  
+  // Get user role
+  const getUserRole = () => {
+    if (!user?.role) return 'admin'; // Default to admin if no role
+    const roleStr = typeof user.role === 'string' ? user.role : (user.role as any)?.roleName || '';
+    return roleStr.toLowerCase();
+  };
+
+  const userRole = getUserRole();
+  
+  // Filter navigation based on user role
+  const filteredNavigation = navigation.filter(item => {
+    if (!item.roles) return true; // If no roles specified, show to all
+    return item.roles.includes(userRole);
+  }).map(item => ({
+    ...item,
+    children: item.children ? item.children.filter(child => {
+      if (!child.roles) return true;
+      return child.roles.includes(userRole);
+    }) : undefined
+  })).filter(item => {
+    // Hide parent items that have no visible children
+    if (item.children && item.children.length === 0) return false;
+    return true;
+  });
+  
+  // Set default expanded items based on role
+  const getDefaultExpanded = () => {
+    switch (userRole) {
+      case 'admin':
+        return ['User Management', 'Vocabulary', 'Exam System'];
+      case 'teacher':
+        return ['Student Management', 'Vocabulary', 'Exam System'];
+      case 'student':
+        return ['Vocabulary', 'Exam System', 'Learning Paths'];
+      default:
+        return ['Vocabulary', 'Exam System'];
+    }
+  };
+
+  const [expandedItems, setExpandedItems] = useState<string[]>(getDefaultExpanded());
 
   const toggleExpanded = (itemName: string) => {
     setExpandedItems(prev =>
@@ -160,7 +218,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       return location.pathname === item.href;
     }
     if (item.children) {
-      return item.children.some(child => location.pathname === child.href);
+      return item.children.some((child: NavigationItem) => location.pathname === child.href);
     }
     return false;
   };
@@ -190,7 +248,12 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </div>
             <div>
               <span className="text-lg font-bold text-white">English Learning</span>
-              <p className="text-xs text-slate-400">Management System</p>
+              <p className="text-xs text-slate-400">
+                {(() => {
+                  const roleStr = typeof user?.role === 'string' ? user?.role : (user?.role as any)?.roleName || 'Admin';
+                  return `${roleStr.charAt(0).toUpperCase() + roleStr.slice(1).toLowerCase()} Dashboard`;
+                })()}
+              </p>
             </div>
           </div>
           <Button
@@ -206,7 +269,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         {/* Navigation */}
         <nav className="mt-6 px-4 pb-6">
           <ul className="space-y-1">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item: NavigationItem) => {
               const isActive = isItemActive(item);
               return (
                 <li key={item.name}>
@@ -265,7 +328,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                       </button>
                       {expandedItems.includes(item.name) && item.children && (
                         <ul className="ml-6 mt-2 space-y-1">
-                          {item.children.map((child) => (
+                          {item.children.map((child: NavigationItem) => (
                             <li key={child.name}>
                               <Link
                                 to={child.href!}
