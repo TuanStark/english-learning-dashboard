@@ -27,6 +27,7 @@ import {
   GitBranch,
   Bot,
   TrendingUp,
+  CheckSquare,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -98,6 +99,7 @@ const navigation: NavigationItem[] = [
     children: [
       { name: 'Exams', href: '/exams', icon: FileText, badge: 'Tests', roles: ['admin', 'teacher', 'student'] },
       { name: 'Questions', href: '/questions', icon: HelpCircle, badge: 'Items', roles: ['admin', 'teacher'] },
+      { name: 'Answer Options', href: '/answer-options', icon: CheckSquare, badge: 'Answers', roles: ['admin', 'teacher'] },
       { name: 'Exam Attempts', href: '/exam-attempts', icon: Target, badge: 'Results', roles: ['admin', 'teacher', 'student'] },
     ]
   },

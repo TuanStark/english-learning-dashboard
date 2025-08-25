@@ -12,6 +12,7 @@ import VocabularyTopics from './pages/VocabularyTopics';
 import { VocabularyExamples } from '@/pages/VocabularyExamples';
 import  Exams  from '@/pages/Exams';
 import Questions from '@/pages/Questions';
+import AnswerOptions from '@/pages/AnswerOptions';
 import ExamAttempts from '@/pages/ExamAttempts';
 import  Grammar from '@/pages/Grammar';
 import { GrammarExamples } from '@/pages/GrammarExamples';
@@ -58,6 +59,7 @@ function App() {
               {/* Exam Management */}
               <Route path="exams" element={<Exams />} />
               <Route path="questions" element={<Questions />} />
+              <Route path="answer-options" element={<AnswerOptions />} />
               <Route path="exam-attempts" element={<ExamAttempts />} />
 
               {/* Grammar Management */}
