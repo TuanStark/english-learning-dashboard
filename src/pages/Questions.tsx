@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Eye,
-  FileText,
+import { useState, useEffect } from 'react';
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   HelpCircle,
   Target,
-  Clock,
-  Star
+  TrendingUp,
+  Star,
+  FileText,
+  Hash
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { questionApi, examApi } from '@/services/api';
 import type { Question, Exam } from '@/types/backend';
 
@@ -28,45 +29,16 @@ export default function Questions() {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
-
-  // Mock data for development
-  const mockQuestions: Question[] = [
-    {
-      id: 1,
-      examId: 1,
-      content: "What is the correct form of the verb 'to be' in this sentence: 'I ___ a student'?",
-      questionType: "MultipleChoice",
-      orderIndex: 1,
-      points: 1,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    },
-    {
-      id: 2,
-      examId: 1,
-      content: "Choose the correct preposition: 'She is interested ___ learning English'",
-      questionType: "MultipleChoice",
-      orderIndex: 2,
-      points: 1,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    },
-    {
-      id: 3,
-      examId: 2,
-      content: "Fill in the blank: 'The weather ___ beautiful today'",
-      questionType: "FillInBlank",
-      orderIndex: 1,
-      points: 2,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    }
-  ];
-
-  const mockExams: Exam[] = [
-    { id: 1, title: "Basic Grammar Test", description: "Test basic grammar knowledge" },
-    { id: 2, title: "Vocabulary Quiz", description: "Test vocabulary skills" }
-  ];
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    examId: 1,
+    content: '',
+    questionType: 'MultipleChoice',
+    orderIndex: 1,
+    points: 1.0
+  });
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
     loadQuestions();
@@ -76,12 +48,22 @@ export default function Questions() {
   const loadQuestions = async () => {
     try {
       setLoading(true);
-      // const response = await questionApi.getQuestions();
-      // setQuestions(response.data || []);
-      setQuestions(mockQuestions); // Using mock data for now
+      const response: any = await questionApi.getQuestions();
+      console.log('Questions API Response:', response); // Debug log
+      
+      // Handle different response structures
+      if (Array.isArray(response)) {
+        setQuestions(response);
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          setQuestions(response.data);
+        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray(response.data.data)) {
+          setQuestions(response.data.data);
+        }
+      }
     } catch (error) {
       console.error('Error loading questions:', error);
-      setQuestions(mockQuestions);
+      setQuestions([]);
     } finally {
       setLoading(false);
     }
@@ -89,59 +71,112 @@ export default function Questions() {
 
   const loadExams = async () => {
     try {
-      // const response = await examApi.getExams();
-      // setExams(response.data || []);
-      setExams(mockExams); // Using mock data for now
+      const response: any = await examApi.getExams();
+      // Handle different response structures
+      if (Array.isArray(response)) {
+        setExams(response);
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          setExams(response.data);
+        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray(response.data.data)) {
+          setExams(response.data.data);
+        }
+      }
     } catch (error) {
       console.error('Error loading exams:', error);
-      setExams(mockExams);
+      setExams([]);
     }
   };
 
   const filteredQuestions = questions.filter(question => {
-    const matchesSearch = question.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesExam = selectedExam === 'all' || question.examId.toString() === selectedExam;
+    const matchesSearch = 
+      question.content?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesExam = selectedExam === 'all' || question.examId?.toString() === selectedExam;
     const matchesType = selectedType === 'all' || question.questionType === selectedType;
-    
+
     return matchesSearch && matchesExam && matchesType;
   });
 
   const getQuestionTypeColor = (type: string) => {
     switch (type) {
-      case 'MultipleChoice': return 'bg-blue-100 text-blue-800';
-      case 'FillInBlank': return 'bg-green-100 text-green-800';
-      case 'TrueFalse': return 'bg-purple-100 text-purple-800';
-      case 'Essay': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'MultipleChoice': return 'success';
+      case 'TrueFalse': return 'warning';
+      case 'FillInTheBlank': return 'info';
+      case 'Essay': return 'destructive';
+      default: return 'secondary';
     }
   };
 
-  const getQuestionTypeIcon = (type: string) => {
-    switch (type) {
-      case 'MultipleChoice': return <Target className="h-4 w-4" />;
-      case 'FillInBlank': return <Edit className="h-4 w-4" />;
-      case 'TrueFalse': return <HelpCircle className="h-4 w-4" />;
-      case 'Essay': return <FileText className="h-4 w-4" />;
-      default: return <HelpCircle className="h-4 w-4" />;
+  const getExamTitle = (examId: number) => {
+    const exam = exams.find(e => e.id === examId);
+    return exam ? exam.title : 'Unknown Exam';
+  };
+
+  const handleCreate = () => {
+    setEditingQuestion(null);
+    setFormData({
+      examId: exams.length > 0 ? exams[0].id : 1,
+      content: '',
+      questionType: 'MultipleChoice',
+      orderIndex: 1,
+      points: 1.0
+    });
+    setShowCreateModal(true);
+  };
+
+  const handleEdit = (question: Question) => {
+    setEditingQuestion(question);
+    setFormData({
+      examId: question.examId || 1,
+      content: question.content || '',
+      questionType: question.questionType || 'MultipleChoice',
+      orderIndex: question.orderIndex || 1,
+      points: question.points || 1.0
+    });
+    setShowCreateModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    
+    try {
+      if (editingQuestion) {
+        // Update question
+        await questionApi.updateQuestion(editingQuestion.id, formData);
+        await loadQuestions(); // Reload questions
+        setShowCreateModal(false);
+      } else {
+        // Create question
+        await questionApi.createQuestion(formData);
+        await loadQuestions(); // Reload questions
+        setShowCreateModal(false);
+      }
+    } catch (error: any) {
+      console.error('Error saving question:', error);
+      alert('Error saving question. Please try again.');
+    } finally {
+      setFormLoading(false);
     }
+  };
+
+  const handleInputChange = (field: string, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this question?')) {
       try {
-        // await questionApi.deleteQuestion(id);
+        await questionApi.deleteQuestion(id);
         setQuestions(questions.filter(q => q.id !== id));
-        // Show success message
       } catch (error) {
         console.error('Error deleting question:', error);
-        // Show error message
+        alert('Error deleting question. Please try again.');
       }
     }
-  };
-
-  const handleEdit = (question: Question) => {
-    setEditingQuestion(question);
-    setShowCreateModal(true);
   };
 
   return (
@@ -155,11 +190,11 @@ export default function Questions() {
                 Question Management
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage and organize exam questions across all tests
+                Manage questions, answers, and exam content
               </p>
             </div>
             <Button
-              onClick={() => setShowCreateModal(true)}
+              onClick={handleCreate}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
@@ -188,11 +223,13 @@ export default function Questions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Exams</p>
-                  <p className="text-3xl font-bold text-slate-900">{exams.length}</p>
+                  <p className="text-sm font-medium text-slate-600">Multiple Choice</p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {questions.filter(q => q.questionType === 'MultipleChoice').length}
+                  </p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-full">
-                  <FileText className="h-6 w-6 text-green-600" />
+                  <Target className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </CardContent>
@@ -202,13 +239,13 @@ export default function Questions() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Multiple Choice</p>
+                  <p className="text-sm font-medium text-slate-600">True/False</p>
                   <p className="text-3xl font-bold text-slate-900">
-                    {questions.filter(q => q.questionType === 'MultipleChoice').length}
+                    {questions.filter(q => q.questionType === 'TrueFalse').length}
                   </p>
                 </div>
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <Target className="h-6 w-6 text-purple-600" />
+                <div className="p-3 bg-yellow-100 rounded-full">
+                  <TrendingUp className="h-6 w-6 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
@@ -220,11 +257,11 @@ export default function Questions() {
                 <div>
                   <p className="text-sm font-medium text-slate-600">Total Points</p>
                   <p className="text-3xl font-bold text-slate-900">
-                    {questions.reduce((sum, q) => sum + q.points, 0)}
+                    {questions.reduce((sum, q) => sum + (q.points || 0), 0).toFixed(1)}
                   </p>
                 </div>
-                <div className="p-3 bg-orange-100 rounded-full">
-                  <Star className="h-6 w-6 text-orange-600" />
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <Star className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
@@ -232,95 +269,81 @@ export default function Questions() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-8">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-6">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
                     placeholder="Search questions..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10"
                   />
                 </div>
               </div>
+              
+              <div className="flex gap-4">
+                <Select value={selectedExam} onValueChange={setSelectedExam}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="All Exams" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Exams</SelectItem>
+                    {exams.map((exam) => (
+                      <SelectItem key={exam.id} value={exam.id.toString()}>
+                        {exam.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Exam</label>
-                <select
-                  value={selectedExam}
-                  onChange={(e) => setSelectedExam(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Exams</option>
-                  {exams.map(exam => (
-                    <option key={exam.id} value={exam.id}>{exam.title}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Type</label>
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Types</option>
-                  <option value="MultipleChoice">Multiple Choice</option>
-                  <option value="FillInBlank">Fill in Blank</option>
-                  <option value="TrueFalse">True/False</option>
-                  <option value="Essay">Essay</option>
-                </select>
-              </div>
-
-              <div className="flex items-end">
-                <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedExam('all');
-                    setSelectedType('all');
-                  }}
-                  variant="outline"
-                  className="w-full border-slate-200 hover:bg-slate-50"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Clear Filters
-                </Button>
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>
+                    <SelectItem value="TrueFalse">True/False</SelectItem>
+                    <SelectItem value="FillInTheBlank">Fill in the Blank</SelectItem>
+                    <SelectItem value="Essay">Essay</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Questions Grid */}
+        {/* Questions List */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <Card key={i} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg animate-pulse">
                 <CardContent className="p-6">
                   <div className="h-4 bg-slate-200 rounded mb-4"></div>
-                  <div className="h-3 bg-slate-200 rounded mb-2"></div>
-                  <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+                  <div className="h-6 bg-slate-200 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded mb-4"></div>
+                  <div className="flex gap-2">
+                    <div className="h-6 bg-slate-200 rounded w-16"></div>
+                    <div className="h-6 bg-slate-200 rounded w-20"></div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        ) : (
+        ) : filteredQuestions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredQuestions.map((question) => (
               <Card key={question.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200 group">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <Badge className={getQuestionTypeColor(question.questionType)}>
-                      <div className="flex items-center gap-1">
-                        {getQuestionTypeIcon(question.questionType)}
-                        {question.questionType}
-                      </div>
-                    </Badge>
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                      {question.content?.charAt(0) || 'Q'}
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <Button
                         size="sm"
                         variant="ghost"
@@ -340,49 +363,57 @@ export default function Questions() {
                     </div>
                   </div>
 
-                  <h3 className="font-semibold text-slate-900 mb-3 line-clamp-3">
-                    {question.content}
-                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="font-semibold text-slate-900 text-lg line-clamp-2">
+                        {question.content}
+                      </h3>
+                    </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span>Exam:</span>
-                      <span className="font-medium">
-                        {exams.find(e => e.id === question.examId)?.title || 'Unknown'}
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={getQuestionTypeColor(question.questionType || 'MultipleChoice')}>
+                        {question.questionType || 'MultipleChoice'}
+                      </Badge>
+                      
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Hash className="h-3 w-3" />
+                        Order: {question.orderIndex}
+                      </Badge>
+                      
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Star className="h-3 w-3" />
+                        {question.points || 1.0} pts
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span className="flex items-center gap-1">
+                        <FileText className="h-3 w-3" />
+                        {getExamTitle(question.examId || 1)}
+                      </span>
+                      
+                      <span className="flex items-center gap-1">
+                        <HelpCircle className="h-3 w-3" />
+                        Question #{question.id}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span>Order:</span>
-                      <span className="font-medium">#{question.orderIndex}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span>Points:</span>
-                      <span className="font-medium">{question.points} pt</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Created: {new Date(question.createdAt).toLocaleDateString()}</span>
-                    <span>Updated: {new Date(question.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        )}
-
-        {!loading && filteredQuestions.length === 0 && (
+        ) : (
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <HelpCircle className="h-16 w-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-600 mb-2">No questions found</h3>
               <p className="text-slate-500 mb-6">
-                {searchTerm || selectedExam !== 'all' || selectedType !== 'all' 
+                {searchTerm || selectedExam !== 'all' || selectedType !== 'all'
                   ? 'Try adjusting your search criteria or filters.'
                   : 'Get started by creating your first question.'}
               </p>
               <Button
-                onClick={() => setShowCreateModal(true)}
+                onClick={handleCreate}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -393,30 +424,112 @@ export default function Questions() {
         )}
       </div>
 
-      {/* Create/Edit Modal would go here */}
+      {/* Create/Edit Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
               {editingQuestion ? 'Edit Question' : 'Create New Question'}
             </h2>
-            <p className="text-slate-600 mb-6">
-              {editingQuestion 
-                ? 'Update the question details below.'
-                : 'Fill in the form below to create a new question.'}
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => setShowCreateModal(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600">
-                {editingQuestion ? 'Update Question' : 'Create Question'}
-              </Button>
-            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="content">Question Content *</Label>
+                  <textarea
+                    id="content"
+                    value={formData.content}
+                    onChange={(e) => handleInputChange('content', e.target.value)}
+                    placeholder="Enter your question here..."
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows={4}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="examId">Exam *</Label>
+                  <Select
+                    value={formData.examId.toString()}
+                    onValueChange={(value) => handleInputChange('examId', parseInt(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select exam" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {exams.map((exam) => (
+                        <SelectItem key={exam.id} value={exam.id.toString()}>
+                          {exam.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="questionType">Question Type *</Label>
+                  <Select
+                    value={formData.questionType}
+                    onValueChange={(value) => handleInputChange('questionType', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>
+                      <SelectItem value="TrueFalse">True/False</SelectItem>
+                      <SelectItem value="FillInTheBlank">Fill in the Blank</SelectItem>
+                      <SelectItem value="Essay">Essay</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="orderIndex">Order Index *</Label>
+                  <Input
+                    id="orderIndex"
+                    type="number"
+                    min="1"
+                    value={formData.orderIndex}
+                    onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 1)}
+                    placeholder="Enter order index"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="points">Points *</Label>
+                  <Input
+                    id="points"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={formData.points}
+                    onChange={(e) => handleInputChange('points', parseFloat(e.target.value) || 1.0)}
+                    placeholder="Enter points"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
+                  disabled={formLoading}
+                >
+                  {formLoading ? 'Saving...' : (editingQuestion ? 'Update Question' : 'Create Question')}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
