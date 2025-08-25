@@ -2,22 +2,21 @@ import { useState, useEffect } from 'react';
 import {
   Plus,
   Search,
-  Filter,
   Edit,
   Trash2,
   BookOpen,
   Target,
   TrendingUp,
-  Clock,
   Star,
   Eye,
-  BookOpenCheck,
-  Lightbulb
+  Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { grammarApi } from '@/services/api';
 import type { Grammar } from '@/types/backend';
 
@@ -28,6 +27,18 @@ export default function Grammar() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingGrammar, setEditingGrammar] = useState<Grammar | null>(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    difficultyLevel: 'Easy' as 'Easy' | 'Medium' | 'Hard',
+    orderIndex: 0,
+    isActive: true,
+    difficulty: 'Easy' as 'Easy' | 'Medium' | 'Hard',
+    category: 'Grammar'
+  });
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
     loadGrammars();
@@ -36,13 +47,18 @@ export default function Grammar() {
   const loadGrammars = async () => {
     try {
       setLoading(true);
-      const response = await grammarApi.getGrammars();
-      if (response.data && Array.isArray(response.data)) {
-        setGrammars(response.data);
-      } else if (response.data && typeof response.data === 'object' && 'data' in response.data) {
-        setGrammars(response.data.data || []);
-      } else {
-        setGrammars([]);
+      const response: any = await grammarApi.getGrammar();
+      console.log('Grammar API Response:', response); // Debug log
+      
+      // Handle different response structures
+      if (Array.isArray(response)) {
+        setGrammars(response);
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          setGrammars(response.data);
+        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray(response.data.data)) {
+          setGrammars(response.data.data);
+        }
       }
     } catch (error) {
       console.error('Error loading grammars:', error);
@@ -70,39 +86,75 @@ export default function Grammar() {
     }
   };
 
+  const handleCreate = () => {
+    setEditingGrammar(null);
+    setFormData({
+      title: '',
+      content: '',
+      difficultyLevel: 'Easy',
+      orderIndex: 0,
+      isActive: true,
+      difficulty: 'Easy',
+      category: 'Grammar'
+    });
+    setShowCreateModal(true);
+  };
+
+  const handleEdit = (grammar: Grammar) => {
+    setEditingGrammar(grammar);
+    setFormData({
+      title: grammar.title || '',
+      content: grammar.content || '',
+      difficultyLevel: grammar.difficultyLevel || 'Easy',
+      orderIndex: grammar.orderIndex || 0,
+      isActive: grammar.isActive,
+      difficulty: grammar.difficultyLevel || 'Easy',
+      category: 'Grammar'
+    });
+    setShowCreateModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    
+    try {
+      if (editingGrammar) {
+        // Update grammar
+        await grammarApi.updateGrammar(editingGrammar.id, formData);
+        await loadGrammars(); // Reload grammars
+        setShowCreateModal(false);
+      } else {
+        // Create grammar
+        await grammarApi.createGrammar(formData);
+        await loadGrammars(); // Reload grammars
+        setShowCreateModal(false);
+      }
+    } catch (error: any) {
+      console.error('Error saving grammar:', error);
+      alert('Error saving grammar. Please try again.');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string | number | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this grammar lesson?')) {
       try {
         await grammarApi.deleteGrammar(id);
         setGrammars(grammars.filter(g => g.id !== id));
-        // Show success message
       } catch (error) {
         console.error('Error deleting grammar:', error);
-        // Show error message
+        alert('Error deleting grammar. Please try again.');
       }
     }
-  };
-
-  const handleEdit = (grammar: Grammar) => {
-    setEditingGrammar(grammar);
-    setShowCreateModal(true);
-  };
-
-  const handleToggleActive = async (grammar: Grammar) => {
-    try {
-      const newStatus = !grammar.isActive;
-      await grammarApi.updateGrammar(grammar.id, { isActive: newStatus });
-      setGrammars(grammars.map(g => 
-        g.id === grammar.id ? { ...g, isActive: newStatus } : g
-      ));
-    } catch (error) {
-      console.error('Error updating grammar status:', error);
-    }
-  };
-
-  const truncateContent = (content: string, maxLength: number = 150) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
   };
 
   return (
@@ -116,11 +168,11 @@ export default function Grammar() {
                 Grammar Management
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Create and manage grammar lessons and rules
+                Manage grammar lessons, rules, and examples
               </p>
             </div>
             <Button
-              onClick={() => setShowCreateModal(true)}
+              onClick={handleCreate}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
@@ -149,29 +201,13 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Lessons</p>
-                  <p className="text-3xl font-bold text-slate-900">
-                    {grammars.filter(g => g.isActive).length}
-                  </p>
-                </div>
-                <div className="p-3 bg-green-100 rounded-full">
-                  <BookOpenCheck className="h-6 w-6 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Easy Lessons</p>
+                  <p className="text-sm font-medium text-slate-600">Easy Level</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {grammars.filter(g => g.difficultyLevel === 'Easy').length}
                   </p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-full">
-                  <Star className="h-6 w-6 text-green-600" />
+                  <Target className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </CardContent>
@@ -181,13 +217,29 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Hard Lessons</p>
+                  <p className="text-sm font-medium text-slate-600">Medium Level</p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {grammars.filter(g => g.difficultyLevel === 'Medium').length}
+                  </p>
+                </div>
+                <div className="p-3 bg-yellow-100 rounded-full">
+                  <TrendingUp className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Hard Level</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {grammars.filter(g => g.difficultyLevel === 'Hard').length}
                   </p>
                 </div>
                 <div className="p-3 bg-red-100 rounded-full">
-                  <Target className="h-6 w-6 text-red-600" />
+                  <Star className="h-6 w-6 text-red-600" />
                 </div>
               </div>
             </CardContent>
@@ -195,86 +247,66 @@ export default function Grammar() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-8">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-6">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
                     placeholder="Search grammar lessons..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10"
                   />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Difficulty</label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Difficulties</option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </select>
-              </div>
-
-              <div className="flex items-end">
-                <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedDifficulty('all');
-                  }}
-                  variant="outline"
-                  className="w-full border-slate-200 hover:bg-slate-50"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Clear Filters
-                </Button>
+              
+              <div className="flex gap-4">
+                <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="All Difficulties" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Difficulties</SelectItem>
+                    <SelectItem value="Easy">Easy</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Grammar Grid */}
+        {/* Grammar List */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <Card key={i} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg animate-pulse">
                 <CardContent className="p-6">
                   <div className="h-4 bg-slate-200 rounded mb-4"></div>
-                  <div className="h-3 bg-slate-200 rounded mb-2"></div>
-                  <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+                  <div className="h-6 bg-slate-200 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded mb-4"></div>
+                  <div className="flex gap-2">
+                    <div className="h-6 bg-slate-200 rounded w-16"></div>
+                    <div className="h-6 bg-slate-200 rounded w-20"></div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        ) : (
+        ) : filteredGrammars.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredGrammars.map((grammar) => (
               <Card key={grammar.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200 group">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                        {grammar.title?.charAt(0) || 'G'}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <Badge variant={getDifficultyColor(grammar.difficultyLevel || 'Easy')}>
-                          {grammar.difficultyLevel || 'Easy'}
-                        </Badge>
-                        <Badge variant={grammar.isActive ? 'success' : 'destructive'}>
-                          {grammar.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                      {grammar.title?.charAt(0) || 'G'}
                     </div>
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    
+                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <Button
                         size="sm"
                         variant="ghost"
@@ -282,14 +314,6 @@ export default function Grammar() {
                         className="h-8 w-8 p-0 hover:bg-blue-50"
                       >
                         <Edit className="h-4 w-4 text-blue-600" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleToggleActive(grammar)}
-                        className="h-8 w-8 p-0 hover:bg-yellow-50"
-                      >
-                        <Eye className="h-4 w-4 text-yellow-600" />
                       </Button>
                       <Button
                         size="sm"
@@ -302,49 +326,47 @@ export default function Grammar() {
                     </div>
                   </div>
 
-                  <h3 className="font-semibold text-slate-900 mb-2 text-lg">
-                    {grammar.title}
-                  </h3>
-
-                  <p className="text-slate-600 mb-4 text-sm line-clamp-3">
-                    {truncateContent(grammar.content || 'No content available')}
-                  </p>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span className="flex items-center gap-1">
-                        <Target className="h-4 w-4" />
-                        Order
-                      </span>
-                      <span className="font-medium">#{grammar.orderIndex || 0}</span>
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="font-semibold text-slate-900 text-lg">
+                        {grammar.title}
+                      </h3>
+                      <p className="text-slate-600 text-sm mt-1 line-clamp-3">
+                        {grammar.content}
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span className="flex items-center gap-1">
-                        <Lightbulb className="h-4 w-4" />
-                        Examples
-                      </span>
-                      <span className="font-medium">{grammar.examples?.length || 0}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <span className="flex items-center gap-1">
-                        <TrendingUp className="h-4 w-4" />
-                        Progress
-                      </span>
-                      <span className="font-medium">{grammar.userProgress?.length || 0} learners</span>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Created: {new Date(grammar.createdAt).toLocaleDateString()}</span>
-                    <span>Updated: {new Date(grammar.updatedAt).toLocaleDateString()}</span>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={getDifficultyColor(grammar.difficultyLevel || 'Easy')}>
+                        {grammar.difficultyLevel || 'Easy'}
+                      </Badge>
+                      
+                      <Badge variant="outline">
+                        Order: {grammar.orderIndex}
+                      </Badge>
+                      
+                      <Badge variant={grammar.isActive ? 'success' : 'secondary'}>
+                        {grammar.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        Lesson #{grammar.id}
+                      </span>
+                      
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        {grammar.examples?.length || 0} examples
+                      </span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        )}
-
-        {!loading && filteredGrammars.length === 0 && (
+        ) : (
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <BookOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
@@ -355,41 +377,110 @@ export default function Grammar() {
                   : 'Get started by creating your first grammar lesson.'}
               </p>
               <Button
-                onClick={() => setShowCreateModal(true)}
+                onClick={handleCreate}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Create Grammar Lesson
+                Create Grammar
               </Button>
             </CardContent>
           </Card>
         )}
       </div>
 
-      {/* Create/Edit Modal would go here */}
+      {/* Create/Edit Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
               {editingGrammar ? 'Edit Grammar Lesson' : 'Create New Grammar Lesson'}
             </h2>
-            <p className="text-slate-600 mb-6">
-              {editingGrammar
-                ? 'Update the grammar lesson details below.'
-                : 'Fill in the form below to create a new grammar lesson.'}
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => setShowCreateModal(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600">
-                {editingGrammar ? 'Update Lesson' : 'Create Lesson'}
-              </Button>
-            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    placeholder="Enter grammar lesson title"
+                    required
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <Label htmlFor="content">Content *</Label>
+                  <textarea
+                    id="content"
+                    value={formData.content}
+                    onChange={(e) => handleInputChange('content', e.target.value)}
+                    placeholder="Enter grammar lesson content with rules and explanations"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows={8}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="difficultyLevel">Difficulty Level</Label>
+                  <Select
+                    value={formData.difficultyLevel}
+                    onValueChange={(value) => handleInputChange('difficultyLevel', value as any)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Easy">Easy</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="Hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Input
+                    id="orderIndex"
+                    type="number"
+                    min="0"
+                    value={formData.orderIndex}
+                    onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
+                    placeholder="Enter order index"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                  className="rounded border-slate-300"
+                />
+                <Label htmlFor="isActive">Active</Label>
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
+                  disabled={formLoading}
+                >
+                  {formLoading ? 'Saving...' : (editingGrammar ? 'Update Grammar' : 'Create Grammar')}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}

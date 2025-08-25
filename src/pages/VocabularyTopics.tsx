@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
-  Filter, 
   Edit, 
   Trash2, 
   FolderOpen,
@@ -14,7 +13,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { vocabularyTopicApi, vocabularyApi } from '@/services/api';
 import type { VocabularyTopic, Vocabulary } from '@/types/backend';
 
 export default function VocabularyTopics() {
@@ -22,63 +23,18 @@ export default function VocabularyTopics() {
   const [vocabularies, setVocabularies] = useState<Vocabulary[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTopic, setEditingTopic] = useState<VocabularyTopic | null>(null);
-
-  // Mock data for development
-  const mockTopics: VocabularyTopic[] = [
-    {
-      id: 1,
-      name: "Basic Greetings",
-      description: "Essential greetings and common phrases for beginners",
-      difficulty: "Beginner",
-      color: "#3B82F6",
-      icon: "👋",
-      vocabularyCount: 15,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    },
-    {
-      id: 2,
-      name: "Food & Dining",
-      description: "Vocabulary related to food, restaurants, and dining experiences",
-      difficulty: "Intermediate",
-      color: "#10B981",
-      icon: "🍽️",
-      vocabularyCount: 25,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    },
-    {
-      id: 3,
-      name: "Business & Work",
-      description: "Professional vocabulary for workplace communication",
-      difficulty: "Advanced",
-      color: "#8B5CF6",
-      icon: "💼",
-      vocabularyCount: 30,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    },
-    {
-      id: 4,
-      name: "Travel & Tourism",
-      description: "Essential vocabulary for traveling and tourism",
-      difficulty: "Intermediate",
-      color: "#F59E0B",
-      icon: "✈️",
-      vocabularyCount: 20,
-      createdAt: "2025-01-20T10:00:00Z",
-      updatedAt: "2025-01-20T10:00:00Z"
-    }
-  ];
-
-  const mockVocabularies: Vocabulary[] = [
-    { id: 1, topicId: 1, word: "Hello", translation: "Xin chào", difficulty: "Beginner" },
-    { id: 2, topicId: 1, word: "Goodbye", translation: "Tạm biệt", difficulty: "Beginner" },
-    { id: 3, topicId: 2, word: "Restaurant", translation: "Nhà hàng", difficulty: "Intermediate" }
-  ];
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    topicName: '',
+    description: '',
+    image: '',
+    orderIndex: 0,
+    isActive: true
+  });
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
     loadTopics();
@@ -88,12 +44,22 @@ export default function VocabularyTopics() {
   const loadTopics = async () => {
     try {
       setLoading(true);
-      // const response = await vocabularyTopicApi.getTopics();
-      // setTopics(response.data || []);
-      setTopics(mockTopics); // Using mock data for now
+      const response: any = await vocabularyTopicApi.getTopics();
+      console.log('Topics API Response:', response); // Debug log
+      
+      // Handle different response structures
+      if (Array.isArray(response)) {
+        setTopics(response);
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          setTopics(response.data);
+        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray(response.data.data)) {
+          setTopics(response.data.data);
+        }
+      }
     } catch (error) {
       console.error('Error loading topics:', error);
-      setTopics(mockTopics);
+      setTopics([]);
     } finally {
       setLoading(false);
     }
@@ -101,52 +67,101 @@ export default function VocabularyTopics() {
 
   const loadVocabularies = async () => {
     try {
-      // const response = await vocabularyApi.getVocabularies();
-      // setVocabularies(response.data || []);
-      setVocabularies(mockVocabularies); // Using mock data for now
+      const response: any = await vocabularyApi.getVocabularies();
+      // Handle different response structures
+      if (Array.isArray(response)) {
+        setVocabularies(response);
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          setVocabularies(response.data);
+        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray(response.data.data)) {
+          setVocabularies(response.data.data);
+        }
+      }
     } catch (error) {
       console.error('Error loading vocabularies:', error);
-      setVocabularies(mockVocabularies);
+      setVocabularies([]);
     }
   };
 
   const filteredTopics = topics.filter(topic => {
-    const matchesSearch = topic.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         topic.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty === 'all' || topic.difficulty === selectedDifficulty;
-    
-    return matchesSearch && matchesDifficulty;
+    const matchesSearch = 
+      topic.topicName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (topic.description && topic.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesSearch;
   });
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Beginner': return 'bg-green-100 text-green-800';
-      case 'Intermediate': return 'bg-blue-100 text-blue-800';
-      case 'Advanced': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const getVocabularyCount = (topicId: number) => {
     return vocabularies.filter(v => v.topicId === topicId).length;
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this topic? This will also remove all associated vocabulary words.')) {
-      try {
-        // await vocabularyTopicApi.deleteTopic(id);
-        setTopics(topics.filter(t => t.id !== id));
-        // Show success message
-      } catch (error) {
-        console.error('Error deleting topic:', error);
-        // Show error message
-      }
-    }
+
+
+  const handleCreate = () => {
+    setEditingTopic(null);
+    setFormData({
+      topicName: '',
+      description: '',
+      image: '',
+      orderIndex: 0,
+      isActive: true
+    });
+    setShowCreateModal(true);
   };
 
   const handleEdit = (topic: VocabularyTopic) => {
     setEditingTopic(topic);
+    setFormData({
+      topicName: topic.topicName || '',
+      description: topic.description || '',
+      image: topic.image || '',
+      orderIndex: topic.orderIndex || 0,
+      isActive: topic.isActive
+    });
     setShowCreateModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    
+    try {
+      if (editingTopic) {
+        // Update topic
+        await vocabularyTopicApi.updateTopic(editingTopic.id, formData);
+        await loadTopics(); // Reload topics
+        setShowCreateModal(false);
+      } else {
+        // Create topic
+        await vocabularyTopicApi.createTopic(formData);
+        await loadTopics(); // Reload topics
+        setShowCreateModal(false);
+      }
+    } catch (error: any) {
+      console.error('Error saving topic:', error);
+      alert('Error saving topic. Please try again.');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string | number | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm('Are you sure you want to delete this topic? This will also delete all associated vocabularies.')) {
+      try {
+        await vocabularyTopicApi.deleteTopic(id);
+        setTopics(topics.filter(t => t.id !== id));
+      } catch (error) {
+        console.error('Error deleting topic:', error);
+        alert('Error deleting topic. Please try again.');
+      }
+    }
   };
 
   return (
@@ -157,14 +172,14 @@ export default function VocabularyTopics() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Vocabulary Topics
+                Vocabulary Topics Management
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Organize and manage vocabulary learning topics and categories
+                Manage vocabulary topics and categories
               </p>
             </div>
             <Button
-              onClick={() => setShowCreateModal(true)}
+              onClick={handleCreate}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
@@ -207,13 +222,13 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Beginner Topics</p>
+                  <p className="text-sm font-medium text-slate-600">Active Topics</p>
                   <p className="text-3xl font-bold text-slate-900">
-                    {topics.filter(t => t.difficulty === 'Beginner').length}
+                    {topics.filter(t => t.isActive).length}
                   </p>
                 </div>
-                <div className="p-3 bg-green-100 rounded-full">
-                  <Tag className="h-6 w-6 text-green-600" />
+                <div className="p-3 bg-yellow-100 rounded-full">
+                  <Tag className="h-6 w-6 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
@@ -223,9 +238,9 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Advanced Topics</p>
+                  <p className="text-sm font-medium text-slate-600">Avg Words/Topic</p>
                   <p className="text-3xl font-bold text-slate-900">
-                    {topics.filter(t => t.difficulty === 'Advanced').length}
+                    {topics.length > 0 ? Math.round(vocabularies.length / topics.length) : 0}
                   </p>
                 </div>
                 <div className="p-3 bg-purple-100 rounded-full">
@@ -237,84 +252,52 @@ export default function VocabularyTopics() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-8">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mb-6">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
                     placeholder="Search topics..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Difficulty</label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Difficulties</option>
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-              </div>
-
-              <div className="flex items-end">
-                <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedDifficulty('all');
-                  }}
-                  variant="outline"
-                  className="w-full border-slate-200 hover:bg-slate-50"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Clear Filters
-                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Topics Grid */}
+        {/* Topics List */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <Card key={i} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg animate-pulse">
                 <CardContent className="p-6">
                   <div className="h-4 bg-slate-200 rounded mb-4"></div>
-                  <div className="h-3 bg-slate-200 rounded mb-2"></div>
-                  <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+                  <div className="h-6 bg-slate-200 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded mb-4"></div>
+                  <div className="flex gap-2">
+                    <div className="h-6 bg-slate-200 rounded w-16"></div>
+                    <div className="h-6 bg-slate-200 rounded w-20"></div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        ) : (
+        ) : filteredTopics.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTopics.map((topic) => (
               <Card key={topic.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200 group">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                        style={{ backgroundColor: topic.color + '20' }}
-                      >
-                        {topic.icon}
-                      </div>
-                      <Badge className={getDifficultyColor(topic.difficulty)}>
-                        {topic.difficulty}
-                      </Badge>
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                      {topic.topicName?.charAt(0) || 'T'}
                     </div>
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    
+                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <Button
                         size="sm"
                         variant="ghost"
@@ -334,53 +317,56 @@ export default function VocabularyTopics() {
                     </div>
                   </div>
 
-                  <h3 className="font-semibold text-slate-900 mb-2 text-lg">
-                    {topic.name}
-                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="font-semibold text-slate-900 text-lg">
+                        {topic.topicName}
+                      </h3>
+                      {topic.description && (
+                        <p className="text-slate-600 text-sm mt-1">
+                          {topic.description}
+                        </p>
+                      )}
+                    </div>
 
-                  <p className="text-slate-600 mb-4 line-clamp-2">
-                    {topic.description}
-                  </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={topic.isActive ? 'success' : 'secondary'}>
+                        {topic.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                      
+                      <Badge variant="outline">
+                        Order: {topic.orderIndex}
+                      </Badge>
+                    </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center justify-between text-sm text-slate-600">
+                    <div className="flex items-center justify-between text-sm text-slate-500">
                       <span className="flex items-center gap-1">
                         <Book className="h-4 w-4" />
-                        Vocabulary Words
+                        {getVocabularyCount(topic.id)} words
                       </span>
-                      <span className="font-medium">{getVocabularyCount(topic.id)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
+                      
                       <span className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
-                        Learners
+                        Topic #{topic.id}
                       </span>
-                      <span className="font-medium">0</span>
                     </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Created: {new Date(topic.createdAt).toLocaleDateString()}</span>
-                    <span>Updated: {new Date(topic.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        )}
-
-        {!loading && filteredTopics.length === 0 && (
+        ) : (
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <FolderOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-600 mb-2">No topics found</h3>
               <p className="text-slate-500 mb-6">
-                {searchTerm || selectedDifficulty !== 'all'
-                  ? 'Try adjusting your search criteria or filters.'
+                {searchTerm
+                  ? 'Try adjusting your search criteria.'
                   : 'Get started by creating your first vocabulary topic.'}
               </p>
               <Button
-                onClick={() => setShowCreateModal(true)}
+                onClick={handleCreate}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -391,30 +377,91 @@ export default function VocabularyTopics() {
         )}
       </div>
 
-      {/* Create/Edit Modal would go here */}
+      {/* Create/Edit Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {editingTopic ? 'Edit Vocabulary Topic' : 'Create New Topic'}
+              {editingTopic ? 'Edit Topic' : 'Create New Topic'}
             </h2>
-            <p className="text-slate-600 mb-6">
-              {editingTopic 
-                ? 'Update the topic details below.'
-                : 'Fill in the form below to create a new vocabulary topic.'}
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => setShowCreateModal(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600">
-                {editingTopic ? 'Update Topic' : 'Create Topic'}
-              </Button>
-            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="topicName">Topic Name *</Label>
+                  <Input
+                    id="topicName"
+                    value={formData.topicName}
+                    onChange={(e) => handleInputChange('topicName', e.target.value)}
+                    placeholder="Enter topic name"
+                    required
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <Label htmlFor="description">Description</Label>
+                  <textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    placeholder="Enter topic description"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows={3}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="image">Image URL</Label>
+                  <Input
+                    id="image"
+                    value={formData.image}
+                    onChange={(e) => handleInputChange('image', e.target.value)}
+                    placeholder="Enter image URL"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Input
+                    id="orderIndex"
+                    type="number"
+                    min="0"
+                    value={formData.orderIndex}
+                    onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
+                    placeholder="Enter order index"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                  className="rounded border-slate-300"
+                />
+                <Label htmlFor="isActive">Active</Label>
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
+                  disabled={formLoading}
+                >
+                  {formLoading ? 'Saving...' : (editingTopic ? 'Update Topic' : 'Create Topic')}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
