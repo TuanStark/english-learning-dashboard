@@ -246,8 +246,10 @@ export interface BlogCategory {
 
 export interface VocabularyTopic {
   id: number;
-  name: string;
+  topicName: string;
   description?: string;
+  image?: string;
+  orderIndex: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
