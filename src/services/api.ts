@@ -1,33 +1,33 @@
 import axios from 'axios';
 import type { 
-  ApiResponse, 
+  ApiResponse,
   PaginatedResponse,
   User, 
   Role,
   Vocabulary,
   VocabularyTopic,
   VocabularyExample,
-  UserVocabularyProgress,
   Exam,
   Question,
   AnswerOption,
   ExamAttempt,
   Grammar,
   GrammarExample,
+  Pagination,
+  UserStats,
+  CreateVocabularyDto,
+  CreateExamDto,
+  CreateGrammarDto,
+  UserVocabularyProgress,
   UserGrammarProgress,
-  BlogCategory,
   BlogPost,
+  CreateBlogPostDto,
+  BlogCategory,
   BlogComment,
   LearningPath,
   PathStep,
   UserLearningPath,
-  AIExplanation,
-  DashboardStats,
-  UserStats,
-  CreateExamDto,
-  CreateVocabularyDto,
-  CreateGrammarDto,
-  CreateBlogPostDto
+  AIExplanation
 } from '@/types/backend';
 
 // API Configuration
@@ -44,6 +44,7 @@ const api = axios.create({
 // Request interceptor for auth
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
+  console.log
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -100,7 +101,7 @@ export const apiService = {
 export const userApi = {
   // Get all users with pagination
   getUsers: (params?: any) => 
-    apiService.get<PaginatedResponse<User>>('/users', params),
+    apiService.get<PaginatedResponse<User>>('/user/all', params),
 
   // Get user by ID
   getUser: (id: number) => 
@@ -108,19 +109,19 @@ export const userApi = {
 
   // Create new user
   createUser: (data: Partial<User>) => 
-    apiService.post<User>('/users', data),
+    apiService.post<User>('/user/create', data),
 
   // Update user
   updateUser: (id: number, data: Partial<User>) => 
-    apiService.patch<User>(`/users/${id}`, data),
+    apiService.patch<User>(`/user/${id}`, data),
 
   // Delete user
   deleteUser: (id: number) => 
-    apiService.delete<User>(`/users/${id}`),
+    apiService.patch<User>(`/user/delete/${id}`, {}),
 
   // Get user stats
   getUserStats: (id: number) => 
-    apiService.get<UserStats>(`/users/${id}/stats`),
+    apiService.get<UserStats>(`/user/stats/${id}`),
 };
 
 // Role Management API
@@ -289,8 +290,8 @@ export const blogApi = {
     apiService.get<BlogPost[]>(`/blog-categories/${categorySlug}/posts`),
 };
 
-// Learning Path API
-export const learningPathApi = {
+// Learning Path API (Legacy - use learningPathApi below for full CRUD)
+export const learningPathLegacyApi = {
   // Get all learning paths
   getPaths: () => 
     apiService.get<LearningPath[]>('/learning-paths'),
@@ -336,6 +337,311 @@ export const dashboardApi = {
   // Get user statistics by ID (Admin only)
   getUserStatsById: (userId: number) => 
     apiService.get<any>(`/dashboard/user/${userId}/stats`),
+};
+
+// Question Management API
+export const questionApi = {
+  // Get all questions with pagination
+  getQuestions: (params?: any) => 
+    apiService.get<PaginatedResponse<Question>>('/questions', params),
+
+  // Get question by ID
+  getQuestion: (id: number) => 
+    apiService.get<Question>(`/questions/${id}`),
+
+  // Get questions by exam
+  getQuestionsByExam: (examId: number) => 
+    apiService.get<Question[]>(`/questions/exam/${examId}`),
+
+  // Create new question
+  createQuestion: (data: any) => 
+    apiService.post<Question>('/questions', data),
+
+  // Update question
+  updateQuestion: (id: number, data: Partial<Question>) => 
+    apiService.patch<Question>(`/questions/${id}`, data),
+
+  // Delete question
+  deleteQuestion: (id: number) => 
+    apiService.delete<Question>(`/questions/${id}`),
+};
+
+// Answer Option Management API
+export const answerOptionApi = {
+  // Get all answer options
+  getAnswerOptions: (params?: any) => 
+    apiService.get<PaginatedResponse<AnswerOption>>('/answer-options', params),
+
+  // Get answer options by question
+  getAnswerOptionsByQuestion: (questionId: number) => 
+    apiService.get<AnswerOption[]>(`/answer-options?questionId=${questionId}`),
+
+  // Get answer option by ID
+  getAnswerOption: (id: number) => 
+    apiService.get<AnswerOption>(`/answer-options/${id}`),
+
+  // Create new answer option
+  createAnswerOption: (data: any) => 
+    apiService.post<AnswerOption>('/answer-options', data),
+
+  // Update answer option
+  updateAnswerOption: (id: number, data: Partial<AnswerOption>) => 
+    apiService.patch<AnswerOption>(`/answer-options/${id}`, data),
+
+  // Delete answer option
+  deleteAnswerOption: (id: number) => 
+    apiService.delete<AnswerOption>(`/answer-options/${id}`),
+};
+
+// Exam Attempt Management API
+export const examAttemptApi = {
+  // Get all exam attempts with pagination
+  getExamAttempts: (params?: any) => 
+    apiService.get<PaginatedResponse<ExamAttempt>>('/exam-attempts', params),
+
+  // Get exam attempt by ID
+  getExamAttempt: (id: number) => 
+    apiService.get<ExamAttempt>(`/exam-attempts/${id}`),
+
+  // Get attempts by user
+  getUserAttempts: (userId: number) => 
+    apiService.get<ExamAttempt[]>(`/exam-attempts?userId=${userId}`),
+
+  // Get attempts by exam
+  getExamAttemptsByExam: (examId: number) => 
+    apiService.get<ExamAttempt[]>(`/exam-attempts?examId=${examId}`),
+
+  // Create new exam attempt
+  createExamAttempt: (data: any) => 
+    apiService.post<ExamAttempt>('/exam-attempts', data),
+
+  // Submit exam attempt
+  submitExamAttempt: (attemptId: number, answers: any[]) => 
+    apiService.post<ExamAttempt>(`/exam-attempts/${attemptId}/submit`, { answers }),
+
+  // Update exam attempt
+  updateExamAttempt: (id: number, data: Partial<ExamAttempt>) => 
+    apiService.patch<ExamAttempt>(`/exam-attempts/${id}`, data),
+
+  // Delete exam attempt
+  deleteExamAttempt: (id: number) => 
+    apiService.delete<ExamAttempt>(`/exam-attempts/${id}`),
+};
+
+// Vocabulary Topic Management API
+export const vocabularyTopicApi = {
+  // Get all vocabulary topics
+  getTopics: () => 
+    apiService.get<VocabularyTopic[]>('/vocabulary-topics'),
+
+  // Get topic by ID
+  getTopic: (id: number) => 
+    apiService.get<VocabularyTopic>(`/vocabulary-topics/${id}`),
+
+  // Create new topic
+  createTopic: (data: any) => 
+    apiService.post<VocabularyTopic>('/vocabulary-topics', data),
+
+  // Update topic
+  updateTopic: (id: number, data: Partial<VocabularyTopic>) => 
+    apiService.patch<VocabularyTopic>(`/vocabulary-topics/${id}`, data),
+
+  // Delete topic
+  deleteTopic: (id: number) => 
+    apiService.delete<VocabularyTopic>(`/vocabulary-topics/${id}`),
+};
+
+// Vocabulary Example Management API
+export const vocabularyExampleApi = {
+  // Get all vocabulary examples
+  getExamples: (params?: any) => 
+    apiService.get<PaginatedResponse<VocabularyExample>>('/vocabulary-examples', params),
+
+  // Get examples by vocabulary
+  getExamplesByVocabulary: (vocabularyId: number) => 
+    apiService.get<VocabularyExample[]>(`/vocabulary-examples?vocabularyId=${vocabularyId}`),
+
+  // Get example by ID
+  getExample: (id: number) => 
+    apiService.get<VocabularyExample>(`/vocabulary-examples/${id}`),
+
+  // Create new example
+  createExample: (data: any) => 
+    apiService.post<VocabularyExample>('/vocabulary-examples', data),
+
+  // Update example
+  updateExample: (id: number, data: Partial<VocabularyExample>) => 
+    apiService.patch<VocabularyExample>(`/vocabulary-examples/${id}`, data),
+
+  // Delete example
+  deleteExample: (id: number) => 
+    apiService.delete<VocabularyExample>(`/vocabulary-examples/${id}`),
+};
+
+// Grammar Example Management API
+export const grammarExampleApi = {
+  // Get all grammar examples
+  getExamples: (params?: any) => 
+    apiService.get<PaginatedResponse<GrammarExample>>('/grammar-examples', params),
+
+  // Get examples by grammar
+  getExamplesByGrammar: (grammarId: number) => 
+    apiService.get<GrammarExample[]>(`/grammar-examples?grammarId=${grammarId}`),
+
+  // Get example by ID
+  getExample: (id: number) => 
+    apiService.get<GrammarExample>(`/grammar-examples/${id}`),
+
+  // Create new example
+  createExample: (data: any) => 
+    apiService.post<GrammarExample>('/grammar-examples', data),
+
+  // Update example
+  updateExample: (id: number, data: Partial<GrammarExample>) => 
+    apiService.patch<GrammarExample>(`/grammar-examples/${id}`, data),
+
+  // Delete example
+  deleteExample: (id: number) => 
+    apiService.delete<GrammarExample>(`/grammar-examples/${id}`),
+};
+
+// Blog Category Management API
+export const blogCategoryApi = {
+  // Get all blog categories
+  getCategories: () => 
+    apiService.get<BlogCategory[]>('/blog-categories'),
+
+  // Get category by ID
+  getCategory: (id: number) => 
+    apiService.get<BlogCategory>(`/blog-categories/${id}`),
+
+  // Get category by slug
+  getCategoryBySlug: (slug: string) => 
+    apiService.get<BlogCategory>(`/blog-categories/slug/${slug}`),
+
+  // Create new category
+  createCategory: (data: any) => 
+    apiService.post<BlogCategory>('/blog-categories', data),
+
+  // Update category
+  updateCategory: (id: number, data: Partial<BlogCategory>) => 
+    apiService.patch<BlogCategory>(`/blog-categories/${id}`, data),
+
+  // Delete category
+  deleteCategory: (id: number) => 
+    apiService.delete<BlogCategory>(`/blog-categories/${id}`),
+};
+
+// Blog Comment Management API
+export const blogCommentApi = {
+  // Get all blog comments
+  getComments: (params?: any) => 
+    apiService.get<PaginatedResponse<BlogComment>>('/blog-comments', params),
+
+  // Get comments by post
+  getCommentsByPost: (postId: number) => 
+    apiService.get<BlogComment[]>(`/blog-comments?postId=${postId}`),
+
+  // Get comment by ID
+  getComment: (id: number) => 
+    apiService.get<BlogComment>(`/blog-comments/${id}`),
+
+  // Create new comment
+  createComment: (data: any) => 
+    apiService.post<BlogComment>('/blog-comments', data),
+
+  // Update comment
+  updateComment: (id: number, data: Partial<BlogComment>) => 
+    apiService.patch<BlogComment>(`/blog-comments/${id}`, data),
+
+  // Delete comment
+  deleteComment: (id: number) => 
+    apiService.delete<BlogComment>(`/blog-comments/${id}`),
+};
+
+// Learning Path Management API
+export const learningPathApi = {
+  // Get all learning paths
+  getPaths: (params?: any) => 
+    apiService.get<PaginatedResponse<LearningPath>>('/learning-paths', params),
+
+  // Get path by ID
+  getPath: (id: number) => 
+    apiService.get<LearningPath>(`/learning-paths/${id}`),
+
+  // Create new path
+  createPath: (data: any) => 
+    apiService.post<LearningPath>('/learning-paths', data),
+
+  // Update path
+  updatePath: (id: number, data: Partial<LearningPath>) => 
+    apiService.patch<LearningPath>(`/learning-paths/${id}`, data),
+
+  // Delete path
+  deletePath: (id: number) => 
+    apiService.delete<LearningPath>(`/learning-paths/${id}`),
+
+  // Get user progress
+  getUserProgress: (userId: number) => 
+    apiService.get<UserLearningPath[]>(`/user-learning-paths?userId=${userId}`),
+};
+
+// Path Step Management API
+export const pathStepApi = {
+  // Get all path steps
+  getSteps: (params?: any) => 
+    apiService.get<PaginatedResponse<PathStep>>('/path-steps', params),
+
+  // Get steps by learning path
+  getStepsByPath: (pathId: number) => 
+    apiService.get<PathStep[]>(`/path-steps?learningPathId=${pathId}`),
+
+  // Get step by ID
+  getStep: (id: number) => 
+    apiService.get<PathStep>(`/path-steps/${id}`),
+
+  // Create new step
+  createStep: (data: any) => 
+    apiService.post<PathStep>('/path-steps', data),
+
+  // Update step
+  updateStep: (id: number, data: Partial<PathStep>) => 
+    apiService.patch<PathStep>(`/path-steps/${id}`, data),
+
+  // Delete step
+  deleteStep: (id: number) => 
+    apiService.delete<PathStep>(`/path-steps/${id}`),
+};
+
+// User Learning Path Progress API
+export const userLearningPathApi = {
+  // Get all user learning path progress
+  getProgress: (params?: any) => 
+    apiService.get<PaginatedResponse<UserLearningPath>>('/user-learning-paths', params),
+
+  // Get progress by user
+  getUserProgress: (userId: number) => 
+    apiService.get<UserLearningPath[]>(`/user-learning-paths?userId=${userId}`),
+
+  // Get progress by learning path
+  getPathProgress: (pathId: number) => 
+    apiService.get<UserLearningPath[]>(`/user-learning-paths?learningPathId=${pathId}`),
+
+  // Get progress by ID
+  getProgressById: (id: number) => 
+    apiService.get<UserLearningPath>(`/user-learning-paths/${id}`),
+
+  // Create new progress
+  createProgress: (data: any) => 
+    apiService.post<UserLearningPath>('/user-learning-paths', data),
+
+  // Update progress
+  updateProgress: (id: number, data: Partial<UserLearningPath>) => 
+    apiService.patch<UserLearningPath>(`/user-learning-paths/${id}`, data),
+
+  // Delete progress
+  deleteProgress: (id: number) => 
+    apiService.delete<UserLearningPath>(`/user-learning-paths/${id}`),
 };
 
 export default api;

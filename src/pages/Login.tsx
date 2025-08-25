@@ -24,7 +24,7 @@ const Login: React.FC = () => {
           <div className="p-8">
             <div className="mb-8 text-center">
               <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-primary-500/20">M</div>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-primary-500/20">E</div>
               </div>
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Welcome back</h2>
               <p className="text-gray-500 dark:text-gray-400 mt-1">Sign in to your account</p>

@@ -67,16 +67,16 @@ const navigation: NavigationItem[] = [
   },
 
   // Student Management - Admin & Teacher
-  {
-    name: 'Student Management',
-    icon: Users,
-    roles: ['admin', 'teacher'],
-    children: [
-      { name: 'All Students', href: '/users', icon: Users, badge: 'Manage', roles: ['admin'] },
-      { name: 'My Students', href: '/my-students', icon: Users, badge: 'Students', roles: ['teacher'] },
-      { name: 'Student Progress', href: '/student-progress', icon: TrendingUp, badge: 'Analytics', roles: ['admin', 'teacher'] },
-    ]
-  },
+  // {
+  //   name: 'Student Management',
+  //   icon: Users,
+  //   roles: ['admin', 'teacher'],
+  //   children: [
+  //     { name: 'All Students', href: '/users', icon: Users, badge: 'Manage', roles: ['admin'] },
+  //     { name: 'My Students', href: '/my-students', icon: Users, badge: 'Students', roles: ['teacher'] },
+  //     { name: 'Student Progress', href: '/student-progress', icon: TrendingUp, badge: 'Analytics', roles: ['admin', 'teacher'] },
+  //   ]
+  // },
 
   // Vocabulary - Admin & Teacher can manage, Student can learn
   {

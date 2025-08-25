@@ -1,109 +1,68 @@
-// Backend API Response Types
+// global-types.ts
+
+// API Response Types
 export interface ApiResponse<T> {
   data: T;
-  statusCode: number;
   message: string;
+  statusCode: number;
+  success: boolean;
 }
 
 export interface PaginatedResponse<T> {
   data: T[];
-  meta: {
-    total: number;
-    pageNumber: number;
-    limitNumber: number;
-    totalPages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
-// User Management
+// Role
+export interface Role {
+  id: number;
+  roleName: string;
+  description?: string;
+  createdAt: string; // ISO string
+  updatedAt: string;
+}
+
+// User
 export interface User {
   id: number;
   email: string;
+  password?: string; // optional khi trả về frontend
   fullName: string;
-  roleId: number;
+  avatar?: string;
+  dateOfBirth?: string;
+  gender?: "Male" | "Female" | "Other";
+  phoneNumber?: string;
+  address?: string;
   isActive: boolean;
+  emailVerified: boolean;
+  roleId: number;
+  status: "active" | "inactive" | "banned";
+  codeId?: string;
+  codeExpired?: string;
   createdAt: string;
   updatedAt: string;
   role?: Role;
 }
 
-export interface Role {
-  id: number;
-  name: string;
-  description?: string;
-  permissions: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Vocabulary System
-export interface VocabularyTopic {
-  id: number;
-  name: string;
-  description?: string;
-  imageUrl?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  vocabularies?: Vocabulary[];
-}
-
-export interface Vocabulary {
-  id: number;
-  topicId: number;
-  word: string;
-  meaning: string;
-  pronunciation?: string;
-  partOfSpeech?: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  topic?: VocabularyTopic;
-  examples?: VocabularyExample[];
-  userProgress?: UserVocabularyProgress[];
-}
-
-export interface VocabularyExample {
-  id: number;
-  vocabularyId: number;
-  sentence: string;
-  translation: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface UserVocabularyProgress {
-  id: number;
-  userId: number;
-  vocabularyId: number;
-  masteryLevel: number;
-  lastPracticedAt: string;
-  practiceCount: number;
-  createdAt: string;
-  updatedAt: string;
-  vocabulary?: Vocabulary;
-}
-
-// Exam System
+// Exam
 export interface Exam {
   id: number;
   title: string;
   description?: string;
+  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM";
   duration: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  type: string;
+  difficulty: "Easy" | "Medium" | "Hard";
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
   questions?: Question[];
   examAttempts?: ExamAttempt[];
-  _count?: {
-    questions: number;
-    examAttempts: number;
-  };
 }
 
+// Question
 export interface Question {
   id: number;
   examId: number;
@@ -116,97 +75,210 @@ export interface Question {
   answerOptions?: AnswerOption[];
 }
 
+// Answer Option
 export interface AnswerOption {
   id: number;
   questionId: number;
   content: string;
   isCorrect: boolean;
-  optionLabel: string;
+  optionLabel: string; // A, B, C, D
   createdAt: string;
   updatedAt: string;
 }
 
+// Exam Attempt
 export interface ExamAttempt {
   id: number;
   userId: number;
   examId: number;
-  status: 'InProgress' | 'Completed' | 'Cancelled';
   score?: number;
-  correctAnswers?: number;
   totalQuestions: number;
+  correctAnswers: number;
   timeSpent?: number;
+  status: "InProgress" | "Completed" | "Abandoned";
+  detailedResult?: any; // JSON
   startedAt: string;
   completedAt?: string;
-  detailedResult?: any;
   createdAt: string;
   updatedAt: string;
   user?: User;
   exam?: Exam;
 }
 
-// Grammar System
+// Vocabulary
+export interface Vocabulary {
+  id: number;
+  topicId: number;
+  englishWord: string;
+  pronunciation?: string;
+  vietnameseMeaning: string;
+  wordType?: string;
+  difficultyLevel: "Easy" | "Medium" | "Hard";
+  image?: string;
+  audioFile?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  examples?: VocabularyExample[];
+}
+
+// Vocabulary Example
+export interface VocabularyExample {
+  id: number;
+  vocabularyId: number;
+  englishSentence: string;
+  vietnameseSentence: string;
+  audioFile?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Grammar
 export interface Grammar {
   id: number;
   title: string;
   content: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  category: string;
+  difficultyLevel: "Easy" | "Medium" | "Hard";
+  orderIndex: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
   examples?: GrammarExample[];
-  userProgress?: UserGrammarProgress[];
 }
 
+// Grammar Example
 export interface GrammarExample {
   id: number;
   grammarId: number;
-  sentence: string;
-  explanation: string;
+  englishSentence: string;
+  vietnameseSentence: string;
+  explanation?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// Pagination
+export interface Pagination {
+  page: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
+}
+
+// Additional types for API
+export interface UserStats {
+  totalExams: number;
+  totalVocabularies: number;
+  totalGrammar: number;
+  averageScore: number;
+}
+
+export interface CreateVocabularyDto {
+  topicId: number;
+  englishWord: string;
+  pronunciation?: string;
+  vietnameseMeaning: string;
+  wordType?: string;
+  difficultyLevel: "Easy" | "Medium" | "Hard";
+}
+
+export interface CreateExamDto {
+  title: string;
+  description?: string;
+  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM";
+  duration: number;
+  difficulty: "Easy" | "Medium" | "Hard";
+  isActive: boolean;
+}
+
+export interface CreateGrammarDto {
+  title: string;
+  content: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  category: string;
+  isActive: boolean;
+}
+
+export interface UserVocabularyProgress {
+  id: number;
+  userId: number;
+  vocabularyId: number;
+  status: "NotStarted" | "InProgress" | "Completed";
+  lastReviewed: string;
+  reviewCount: number;
 }
 
 export interface UserGrammarProgress {
   id: number;
   userId: number;
   grammarId: number;
-  masteryLevel: number;
-  lastPracticedAt: string;
-  practiceCount: number;
-  createdAt: string;
-  updatedAt: string;
-  grammar?: Grammar;
-}
-
-// Blog System
-export interface BlogCategory {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  posts?: BlogPost[];
+  status: "NotStarted" | "InProgress" | "Completed";
+  lastReviewed: string;
+  reviewCount: number;
 }
 
 export interface BlogPost {
   id: number;
-  categoryId: number;
   title: string;
-  slug: string;
   content: string;
-  excerpt?: string;
-  featuredImage?: string;
   authorId: number;
-  status: 'Draft' | 'Published' | 'Archived';
-  publishedAt?: string;
+  categoryId: number;
+  isPublished: boolean;
   createdAt: string;
   updatedAt: string;
-  category?: BlogCategory;
-  author?: User;
-  comments?: BlogComment[];
+}
+
+export interface CreateBlogPostDto {
+  title: string;
+  content: string;
+  authorId: number;
+  categoryId: number;
+  isPublished: boolean;
+}
+
+export interface BlogCategory {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VocabularyTopic {
+  id: number;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LearningPath {
+  id: number;
+  title: string;
+  description?: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserLearningPath {
+  id: number;
+  userId: number;
+  learningPathId: number;
+  progress: number;
+  status: "NotStarted" | "InProgress" | "Completed";
+  startedAt: string;
+  completedAt?: string;
+}
+
+export interface AIExplanation {
+  id: number;
+  content: string;
+  type: "Vocabulary" | "Grammar" | "Question";
+  referenceId: number;
+  createdAt: string;
 }
 
 export interface BlogComment {
@@ -217,121 +289,15 @@ export interface BlogComment {
   isApproved: boolean;
   createdAt: string;
   updatedAt: string;
-  post?: BlogPost;
-  user?: User;
-}
-
-// Learning Path System
-export interface LearningPath {
-  id: number;
-  title: string;
-  description?: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  estimatedDuration: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  steps?: PathStep[];
-  userProgress?: UserLearningPath[];
 }
 
 export interface PathStep {
   id: number;
-  pathId: number;
+  learningPathId: number;
   title: string;
   description?: string;
   orderIndex: number;
-  stepType: 'Vocabulary' | 'Grammar' | 'Exam' | 'Practice';
-  resourceId?: number;
-  isRequired: boolean;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  path?: LearningPath;
-}
-
-export interface UserLearningPath {
-  id: number;
-  userId: number;
-  pathId: number;
-  currentStepId: number;
-  progress: number;
-  startedAt: string;
-  completedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  path?: LearningPath;
-  currentStep?: PathStep;
-}
-
-// AI System
-export interface AIExplanation {
-  id: number;
-  userId: number;
-  attemptId?: number;
-  question: string;
-  explanation: string;
-  aiModel: string;
-  createdAt: string;
-  updatedAt: string;
-  user?: User;
-  attempt?: ExamAttempt;
-}
-
-// Statistics & Analytics
-export interface DashboardStats {
-  totalUsers: number;
-  totalExams: number;
-  totalVocabularies: number;
-  totalGrammar: number;
-  totalBlogPosts: number;
-  activeUsers: number;
-  examCompletions: number;
-  averageScore: number;
-}
-
-export interface UserStats {
-  totalExamsTaken: number;
-  averageScore: number;
-  totalVocabularyMastered: number;
-  totalGrammarMastered: number;
-  learningStreak: number;
-  totalStudyTime: number;
-}
-
-// Form Types
-export interface CreateExamDto {
-  title: string;
-  description?: string;
-  duration: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  type: string;
-  isActive?: boolean;
-}
-
-export interface CreateVocabularyDto {
-  topicId: number;
-  word: string;
-  meaning: string;
-  pronunciation?: string;
-  partOfSpeech?: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  isActive?: boolean;
-}
-
-export interface CreateGrammarDto {
-  title: string;
-  content: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  category: string;
-  isActive?: boolean;
-}
-
-export interface CreateBlogPostDto {
-  categoryId: number;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt?: string;
-  featuredImage?: string;
-  status?: 'Draft' | 'Published' | 'Archived';
 }
