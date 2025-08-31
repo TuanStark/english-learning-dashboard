@@ -220,28 +220,47 @@ export interface UserGrammarProgress {
 export interface BlogPost {
   id: number;
   title: string;
+  slug: string;
+  excerpt?: string;
   content: string;
+  featuredImage?: string;
   authorId: number;
   categoryId: number;
-  isPublished: boolean;
+  status: 'Draft' | 'Published' | 'Archived';
+  viewCount: number;
+  seoKeywords?: string;
+  seoDescription?: string;
+  publishedAt?: string;
   createdAt: string;
   updatedAt: string;
+  author?: User;
+  category?: BlogCategory;
+  comments?: BlogComment[];
 }
 
 export interface CreateBlogPostDto {
   title: string;
+  slug: string;
+  excerpt?: string;
   content: string;
+  featuredImage?: string;
   authorId: number;
   categoryId: number;
-  isPublished: boolean;
+  status: 'Draft' | 'Published' | 'Archived';
+  seoKeywords?: string;
+  seoDescription?: string;
 }
 
 export interface BlogCategory {
   id: number;
-  name: string;
+  categoryName: string;
   description?: string;
+  slug: string;
+  orderIndex: number;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  blogPosts?: BlogPost[];
 }
 
 export interface VocabularyTopic {
@@ -285,12 +304,17 @@ export interface AIExplanation {
 
 export interface BlogComment {
   id: number;
-  postId: number;
+  blogPostId: number;
   userId: number;
   content: string;
-  isApproved: boolean;
+  parentCommentId?: number;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  blogPost?: BlogPost;
+  user?: User;
+  parentComment?: BlogComment;
+  childComments?: BlogComment[];
 }
 
 export interface PathStep {

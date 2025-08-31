@@ -87,7 +87,7 @@ const navigation: NavigationItem[] = [
     children: [
       { name: 'Vocabulary Words', href: '/vocabulary', icon: Book, badge: 'Words', roles: ['admin', 'teacher', 'student'] },
       { name: 'Vocabulary Topics', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Categories', roles: ['admin', 'teacher'] },
-      { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage', roles: ['admin', 'teacher'] },
+      // { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage', roles: ['admin', 'teacher'] },
     ]
   },
 
@@ -111,13 +111,13 @@ const navigation: NavigationItem[] = [
     roles: ['admin', 'teacher', 'student'],
     children: [
       { name: 'Grammar Rules', href: '/grammar', icon: BookOpen, badge: 'Rules', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Grammar Examples', href: '/grammar-examples', icon: Lightbulb, badge: 'Examples', roles: ['admin', 'teacher'] },
+      // { name: 'Grammar Examples', href: '/grammar-examples', icon: Lightbulb, badge: 'Examples', roles: ['admin', 'teacher'] },
     ]
   },
 
   // Content Management - Admin & Teacher
   {
-    name: 'Content Management',
+    name: 'Blog Management',
     icon: MessageSquare,
     roles: ['admin', 'teacher'],
     children: [

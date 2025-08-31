@@ -17,16 +17,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { grammarApi } from '@/services/api';
-import type { Grammar } from '@/types/backend';
+import { grammarApi, grammarExampleApi } from '@/services/api';
+import type { Grammar, GrammarExample } from '@/types/backend';
 
 export default function Grammar() {
   const [grammars, setGrammars] = useState<Grammar[]>([]);
+  const [examples, setExamples] = useState<GrammarExample[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingGrammar, setEditingGrammar] = useState<Grammar | null>(null);
+  const [showExamplesModal, setShowExamplesModal] = useState(false);
+  const [selectedGrammar, setSelectedGrammar] = useState<Grammar | null>(null);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -43,6 +46,25 @@ export default function Grammar() {
   useEffect(() => {
     loadGrammars();
   }, []);
+
+  const loadExamples = async (grammarId: number) => {
+    try {
+      const response = await grammarApi.getGrammarExamples(grammarId);
+      let examplesData: GrammarExample[] = [];
+      
+      if (Array.isArray(response)) {
+        examplesData = response as unknown as GrammarExample[];
+      } else if (response?.data) {
+        const responseData = response.data as any;
+        examplesData = Array.isArray(responseData) ? responseData as unknown as GrammarExample[] : responseData.data as unknown as GrammarExample[] || [];
+      }
+      
+      setExamples(examplesData);
+    } catch (error) {
+      console.error('Error loading examples:', error);
+      setExamples([]);
+    }
+  };
 
   const loadGrammars = async () => {
     try {
@@ -310,6 +332,19 @@ export default function Grammar() {
                       <Button
                         size="sm"
                         variant="ghost"
+                        onClick={() => {
+                          setSelectedGrammar(grammar);
+                          loadExamples(grammar.id);
+                          setShowExamplesModal(true);
+                        }}
+                        className="h-8 w-8 p-0 hover:bg-green-50"
+                        title="View Examples"
+                      >
+                        <BookOpen className="h-4 w-4 text-green-600" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         onClick={() => handleEdit(grammar)}
                         className="h-8 w-8 p-0 hover:bg-blue-50"
                       >
@@ -481,6 +516,80 @@ export default function Grammar() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Examples Modal */}
+      {showExamplesModal && selectedGrammar && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Examples for "{selectedGrammar.title}"
+                </h2>
+                <p className="text-slate-600 mt-1">
+                  {selectedGrammar.content}
+                </p>
+              </div>
+              <Button
+                onClick={() => setShowExamplesModal(false)}
+                variant="outline"
+                size="sm"
+              >
+                Close
+              </Button>
+            </div>
+
+            {examples.length > 0 ? (
+              <div className="space-y-4">
+                {examples.map((example) => (
+                  <Card key={example.id} className="bg-slate-50 border border-slate-200">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-sm font-medium text-slate-700 mb-1">English:</p>
+                          <p className="text-slate-800 bg-white rounded-lg p-3 text-sm border">
+                            {example.englishSentence}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-sm font-medium text-slate-700 mb-1">Vietnamese:</p>
+                          <p className="text-slate-800 bg-white rounded-lg p-3 text-sm border">
+                            {example.vietnameseSentence}
+                          </p>
+                        </div>
+                        
+                        {example.explanation && (
+                          <div>
+                            <p className="text-sm font-medium text-slate-700 mb-1">Explanation:</p>
+                            <p className="text-slate-700 bg-green-50 rounded-lg p-3 text-sm border-l-4 border-green-200">
+                              {example.explanation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-slate-600 mb-2">No examples yet</h3>
+                <p className="text-slate-500 mb-6">
+                  This grammar lesson doesn't have any examples yet.
+                </p>
+                <Button
+                  onClick={() => setShowExamplesModal(false)}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600"
+                >
+                  Close
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

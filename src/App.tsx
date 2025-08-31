@@ -9,13 +9,11 @@ import  Users  from '@/pages/Users';
 import  Roles  from '@/pages/Roles';
 import  Vocabulary  from '@/pages/Vocabulary';
 import VocabularyTopics from './pages/VocabularyTopics';
-import { VocabularyExamples } from '@/pages/VocabularyExamples';
 import  Exams  from '@/pages/Exams';
 import Questions from '@/pages/Questions';
 import AnswerOptions from '@/pages/AnswerOptions';
 import ExamAttempts from '@/pages/ExamAttempts';
 import  Grammar from '@/pages/Grammar';
-import { GrammarExamples } from '@/pages/GrammarExamples';
 import { BlogPosts } from '@/pages/BlogPosts';
 import { BlogCategories } from '@/pages/BlogCategories';
 import { BlogComments } from '@/pages/BlogComments';
@@ -54,7 +52,6 @@ function App() {
               {/* Vocabulary Management */}
               <Route path="vocabulary" element={<Vocabulary />} />
               <Route path="vocabulary-topics" element={<VocabularyTopics />} />
-              <Route path="vocabulary-examples" element={<VocabularyExamples />} />
 
               {/* Exam Management */}
               <Route path="exams" element={<Exams />} />
@@ -64,7 +61,6 @@ function App() {
 
               {/* Grammar Management */}
               <Route path="grammar" element={<Grammar />} />
-              <Route path="grammar-examples" element={<GrammarExamples />} />
 
               {/* Blog Management */}
               <Route path="blog-posts" element={<BlogPosts />} />
