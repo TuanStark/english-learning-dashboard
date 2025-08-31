@@ -272,6 +272,48 @@ export default function Exams() {
     console.log('✅ Refreshed answerOptionsCache');
   };
   
+  // Force refresh answer options for a specific question
+  const forceRefreshAnswerOptions = async (questionId: number) => {
+    console.log('🔄 forceRefreshAnswerOptions called for questionId:', questionId);
+    
+    // Clear cache for this question
+    setAnswerOptionsCache(prev => {
+      const newCache = new Map(prev);
+      newCache.delete(questionId);
+      return newCache;
+    });
+    
+    // Reload fresh data
+    await loadAnswerOptions(questionId);
+    console.log('✅ Force refreshed answer options for question:', questionId);
+  };
+  
+  // Force refresh questions and answer options for an exam
+  const forceRefreshExamData = async (examId: number) => {
+    console.log('🔄 forceRefreshExamData called for examId:', examId);
+    
+    // Clear questions cache
+    setCurrentExamQuestions([]);
+    
+    // Reload questions
+    await loadQuestions(examId);
+    console.log('✅ Force refreshed exam data for exam:', examId);
+  };
+  
+  // Force refresh all data (exams, questions, answer options)
+  const forceRefreshAllData = async () => {
+    console.log('🔄 forceRefreshAllData called');
+    
+    // Clear all caches
+    setCurrentExamQuestions([]);
+    setAnswerOptionsCache(new Map());
+    setAnswerOptions([]);
+    
+    // Reload all data
+    await loadExams();
+    console.log('✅ Force refreshed all data');
+  };
+  
 
   
   const loadAnswerOptions = async (questionId: number) => {
@@ -405,11 +447,33 @@ export default function Exams() {
 
   const handleSubmitExam = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔄 handleSubmitExam called');
+    console.log('📋 examForm:', examForm);
+    
     try {
-      await examApi.createExam(examForm);
-      await loadExams();
+      console.log('➕ Creating new exam');
+      const response = await examApi.createExam(examForm);
+      console.log('✅ Create response:', response);
+      
+      // Force refresh all data
+      await forceRefreshAllData();
+      console.log('✅ Exam created and all data refreshed');
+      
       setShowExamModal(false);
-    } catch (error) {
+      
+      // Reset form
+      setExamForm({
+        title: '',
+        description: '',
+        duration: 60,
+        difficulty: 'Easy',
+        isActive: true
+      });
+      
+      console.log('🎉 Exam operation completed successfully');
+      
+    } catch (error: any) {
+      console.error('❌ Error in handleSubmitExam:', error);
       alert('Error saving exam. Please try again.');
     }
   };
@@ -429,46 +493,87 @@ export default function Exams() {
 
   const handleSubmitQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔄 handleSubmitQuestion called');
+    console.log('📝 editingQuestion:', editingQuestion);
+    console.log('🔍 currentExamId:', currentExamId);
+    console.log('📋 questionForm:', questionForm);
+    
     try {
       if (editingQuestion) {
+        console.log('✏️ Updating question:', editingQuestion.id);
         // Update question
-        await questionApi.updateQuestion(editingQuestion.id, questionForm);
-        await loadQuestions(currentExamId);
+        const response = await questionApi.updateQuestion(editingQuestion.id, questionForm);
+        console.log('✅ Update response:', response);
+        
+        // Force refresh exam data
+        await forceRefreshExamData(currentExamId);
+        console.log('✅ Question updated and data refreshed');
       } else {
+        console.log('➕ Creating new question');
         // Create question
-        await questionApi.createQuestion({
+        const response = await questionApi.createQuestion({
           ...questionForm,
           examId: currentExamId
         });
-        await loadQuestions(currentExamId);
+        console.log('✅ Create response:', response);
+        
+        // Force refresh exam data
+        await forceRefreshExamData(currentExamId);
+        console.log('✅ Question created and data refreshed');
       }
+      
       setShowQuestionModal(false);
       setEditingQuestion(null);
-    } catch (error) {
+      
+      // Reset form
+      setQuestionForm({
+        content: '',
+        questionType: 'MultipleChoice',
+        orderIndex: 1,
+        points: 1.0,
+        examId: currentExamId
+      });
+      
+      console.log('🎉 Question operation completed successfully');
+      
+    } catch (error: any) {
+      console.error('❌ Error in handleSubmitQuestion:', error);
       alert('Error saving question. Please try again.');
     }
   };
 
   // Answer Option CRUD functions
   const handleCreateAnswerOption = (questionId: number) => {
+    console.log('➕ handleCreateAnswerOption called for questionId:', questionId);
     setCurrentQuestionId(questionId);
     setEditingAnswerOption(null);
+    
+    // Reset form to default values
     setAnswerOptionForm({
       content: '',
       isCorrect: false,
       optionLabel: 'A'
     });
+    
     setShowAnswerOptionModal(true);
+    console.log('✅ Modal opened for creating answer option');
+    console.log('🔄 Form reset to default values');
   };
 
   const handleEditAnswerOption = (answerOption: AnswerOption) => {
+    console.log('✏️ handleEditAnswerOption called for answer option:', answerOption);
+    console.log('🔍 Setting currentQuestionId to:', answerOption.questionId);
+    
     setEditingAnswerOption(answerOption);
+    setCurrentQuestionId(answerOption.questionId); // Set currentQuestionId from the answer option
     setAnswerOptionForm({
       content: answerOption.content,
       isCorrect: answerOption.isCorrect,
       optionLabel: answerOption.optionLabel
     });
     setShowAnswerOptionModal(true);
+    console.log('✅ Modal opened for editing answer option');
+    console.log('🔄 Form populated with answer option data');
   };
 
   const handleSubmitAnswerOption = async (e: React.FormEvent) => {
@@ -480,41 +585,126 @@ export default function Exams() {
       return;
     }
     
+    console.log('🔄 handleSubmitAnswerOption called');
+    console.log('📝 editingAnswerOption:', editingAnswerOption);
+    console.log('🔍 currentQuestionId:', currentQuestionId);
+    console.log('📋 answerOptionForm:', answerOptionForm);
+    
     try {
       if (editingAnswerOption) {
+        console.log('✏️ Updating answer option:', editingAnswerOption.id);
         // Update answer option
-        await answerOptionApi.updateAnswerOption(editingAnswerOption.id, {
+        const updateData = {
           ...answerOptionForm,
           questionId: currentQuestionId
-        });
-        // Update cache and reload
-        await loadAllAnswerOptions();
-        await loadAnswerOptions(currentQuestionId);
+        };
+        console.log('📤 Update data:', updateData);
+        
+        const response = await answerOptionApi.updateAnswerOption(editingAnswerOption.id, updateData);
+        console.log('✅ Update response:', response);
+        
+        // Force refresh data immediately
+        console.log('🔄 Reloading data after update...');
+        await forceRefreshAnswerOptions(currentQuestionId);
+        
+        // Also refresh exam data to ensure UI is updated
+        if (expandedExams.size > 0) {
+          const firstExamId = Array.from(expandedExams)[0];
+          await forceRefreshExamData(firstExamId);
+        }
+        
+        console.log('✅ Data reloaded successfully');
       } else {
+        console.log('➕ Creating new answer option');
         // Create answer option
-        await answerOptionApi.createAnswerOption({
+        const createData = {
           ...answerOptionForm,
           questionId: currentQuestionId
-        });
-        // Update cache and reload
-        await loadAllAnswerOptions();
-        await loadAnswerOptions(currentQuestionId);
+        };
+        console.log('📤 Create data:', createData);
+        
+        const response = await answerOptionApi.createAnswerOption(createData);
+        console.log('✅ Create response:', response);
+        
+        // Force refresh data immediately
+        console.log('🔄 Reloading data after create...');
+        await forceRefreshAnswerOptions(currentQuestionId);
+        
+        // Also refresh exam data to ensure UI is updated
+        if (expandedExams.size > 0) {
+          const firstExamId = Array.from(expandedExams)[0];
+          await forceRefreshExamData(firstExamId);
+        }
+        
+        console.log('✅ Data reloaded successfully');
       }
+      
       setShowAnswerOptionModal(false);
       setEditingAnswerOption(null);
+      
+      // Reset form
+      setAnswerOptionForm({
+        content: '',
+        isCorrect: false,
+        optionLabel: 'A'
+      });
+      
+      console.log('🎉 Answer option operation completed successfully');
+      console.log('🔄 Form reset and modal closed');
+      
     } catch (error: any) {
+      console.error('❌ Error in handleSubmitAnswerOption:', error);
+      
+      // Reset form on error
+      setAnswerOptionForm({
+        content: '',
+        isCorrect: false,
+        optionLabel: 'A'
+      });
+      
       alert('Error saving answer option. Please try again.');
     }
   };
 
   const handleDeleteAnswerOption = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this answer option?')) {
+      console.log('🗑️ handleDeleteAnswerOption called for id:', id);
+      console.log('🔍 currentQuestionId:', currentQuestionId);
+      
       try {
-        await answerOptionApi.deleteAnswerOption(id);
-        // Update cache and reload
-        await loadAllAnswerOptions();
-        await loadAnswerOptions(currentQuestionId);
+        console.log('📤 Deleting answer option:', id);
+        const response = await answerOptionApi.deleteAnswerOption(id);
+        console.log('✅ Delete response:', response);
+        
+        // Force refresh data immediately
+        console.log('🔄 Reloading data after delete...');
+        await forceRefreshAnswerOptions(currentQuestionId);
+        
+        // Also refresh exam data to ensure UI is updated
+        if (expandedExams.size > 0) {
+          const firstExamId = Array.from(expandedExams)[0];
+          await forceRefreshExamData(firstExamId);
+        }
+        
+        console.log('✅ Data reloaded successfully after delete');
+        
+        // Reset form after successful delete
+        setAnswerOptionForm({
+          content: '',
+          isCorrect: false,
+          optionLabel: 'A'
+        });
+        
       } catch (error) {
+        console.error('❌ Error deleting answer option:', error);
+        
+        // Reset form on error
+        setAnswerOptionForm({
+          content: '',
+          isCorrect: false,
+          optionLabel: 'A'
+        });
+        
         alert('Error deleting answer option. Please try again.');
       }
     }
@@ -869,7 +1059,7 @@ export default function Exams() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <ExamHeader onCreateExam={handleCreateExam} />
+        <ExamHeader onCreateExam={handleCreateExam} onRefreshAll={forceRefreshAllData} />
 
         {/* Tabs */}
         <ExamTabs activeTab={activeTab} onTabChange={handleTabChange} />
