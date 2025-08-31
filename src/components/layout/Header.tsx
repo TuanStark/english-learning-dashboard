@@ -102,9 +102,9 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
           <div className="hidden sm:block">
             <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-              Học Tiếng Anh
+              English Learning System
             </h1>
-            <p className="text-xs text-gray-500 -mt-1">Hệ thống quản lý</p>
+            <p className="text-xs text-gray-500 -mt-1">System management</p>
           </div>
         </div>
       </div>
