@@ -128,27 +128,27 @@ const navigation: NavigationItem[] = [
   },
 
   // Learning Paths - All roles but different access levels
-  {
-    name: 'Learning Paths',
-    icon: Route,
-    roles: ['admin', 'teacher', 'student'],
-    children: [
-      { name: 'Learning Paths', href: '/learning-paths', icon: Route, badge: 'Paths', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Path Steps', href: '/path-steps', icon: GitBranch, badge: 'Steps', roles: ['admin', 'teacher'] },
-      { name: 'Create Path', href: '/create-path', icon: GitBranch, badge: 'New', roles: ['admin', 'teacher'] },
-    ]
-  },
+  // {
+  //   name: 'Learning Paths',
+  //   icon: Route,
+  //   roles: ['admin', 'teacher', 'student'],
+  //   children: [
+  //     { name: 'Learning Paths', href: '/learning-paths', icon: Route, badge: 'Paths', roles: ['admin', 'teacher', 'student'] },
+  //     { name: 'Path Steps', href: '/path-steps', icon: GitBranch, badge: 'Steps', roles: ['admin', 'teacher'] },
+  //     { name: 'Create Path', href: '/create-path', icon: GitBranch, badge: 'New', roles: ['admin', 'teacher'] },
+  //   ]
+  // },
 
-  // AI & Analytics - Admin & Teacher
-  {
-    name: 'AI & Analytics',
-    icon: Brain,
-    roles: ['admin', 'teacher'],
-    children: [
-      { name: 'AI Explanations', href: '/ai-explanations', icon: Bot, badge: 'AI', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Dashboard Stats', href: '/dashboard-stats', icon: BarChart3, badge: 'Analytics', roles: ['admin', 'teacher'] },
-    ]
-  },
+  // // AI & Analytics - Admin & Teacher
+  // {
+  //   name: 'AI & Analytics',
+  //   icon: Brain,
+  //   roles: ['admin', 'teacher'],
+  //   children: [
+  //     { name: 'AI Explanations', href: '/ai-explanations', icon: Bot, badge: 'AI', roles: ['admin', 'teacher', 'student'] },
+  //     { name: 'Dashboard Stats', href: '/dashboard-stats', icon: BarChart3, badge: 'Analytics', roles: ['admin', 'teacher'] },
+  //   ]
+  // },
 
   // System Tools - Admin only
   {
