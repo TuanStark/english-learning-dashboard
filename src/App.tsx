@@ -31,7 +31,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/import-demo" element={<ImportDemo />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route
               path="/*"
@@ -76,6 +75,9 @@ function App() {
 
               {/* Settings */}
               <Route path="settings" element={<Settings />} />
+
+              {/* Import Demo */}
+              <Route path="import-demo" element={<ImportDemo />} />
             </Route>
           </Routes>
         </Router>
