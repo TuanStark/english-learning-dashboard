@@ -187,10 +187,10 @@ export default function Grammar() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Grammar Management
+                Quản Lý Ngữ Pháp
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage grammar lessons, rules, and examples
+                Quản lý bài học ngữ pháp, quy tắc và ví dụ
               </p>
             </div>
             <Button
@@ -198,7 +198,7 @@ export default function Grammar() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add Grammar
+              Thêm Ngữ Pháp
             </Button>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Lessons</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Bài Học</p>
                   <p className="text-3xl font-bold text-slate-900">{grammars.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -223,7 +223,7 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Easy Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Dễ</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {grammars.filter(g => g.difficultyLevel === 'Easy').length}
                   </p>
@@ -239,7 +239,7 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Medium Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Trung Bình</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {grammars.filter(g => g.difficultyLevel === 'Medium').length}
                   </p>
@@ -255,7 +255,7 @@ export default function Grammar() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Hard Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Khó</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {grammars.filter(g => g.difficultyLevel === 'Hard').length}
                   </p>
@@ -276,7 +276,7 @@ export default function Grammar() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search grammar lessons..."
+                    placeholder="Tìm kiếm bài học ngữ pháp..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -287,10 +287,10 @@ export default function Grammar() {
               <div className="flex gap-4">
                 <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Difficulties" />
+                    <SelectValue placeholder="Tất Cả Mức Độ" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Difficulties</SelectItem>
+                    <SelectItem value="all">Tất Cả Mức Độ</SelectItem>
                     <SelectItem value="Easy">Easy</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
                     <SelectItem value="Hard">Hard</SelectItem>
@@ -338,7 +338,7 @@ export default function Grammar() {
                           setShowExamplesModal(true);
                         }}
                         className="h-8 w-8 p-0 hover:bg-green-50"
-                        title="View Examples"
+                        title="Xem Ví Dụ"
                       >
                         <BookOpen className="h-4 w-4 text-green-600" />
                       </Button>
@@ -377,23 +377,23 @@ export default function Grammar() {
                       </Badge>
                       
                       <Badge variant="outline">
-                        Order: {grammar.orderIndex}
+                        Thứ Tự: {grammar.orderIndex}
                       </Badge>
                       
                       <Badge variant={grammar.isActive ? 'success' : 'secondary'}>
-                        {grammar.isActive ? 'Active' : 'Inactive'}
+                        {grammar.isActive ? 'Hoạt Động' : 'Không Hoạt Động'}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        Lesson #{grammar.id}
+                        Bài Học #{grammar.id}
                       </span>
                       
                       <span className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
-                        {grammar.examples?.length || 0} examples
+                        {grammar.examples?.length || 0} ví dụ
                       </span>
                     </div>
                   </div>
@@ -405,18 +405,18 @@ export default function Grammar() {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <BookOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-600 mb-2">No grammar lessons found</h3>
+              <h3 className="text-xl font-semibold text-slate-600 mb-2">Không tìm thấy bài học ngữ pháp</h3>
               <p className="text-slate-500 mb-6">
                 {searchTerm || selectedDifficulty !== 'all'
-                  ? 'Try adjusting your search criteria or filters.'
-                  : 'Get started by creating your first grammar lesson.'}
+                  ? 'Vui lòng điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc.'
+                  : 'Bắt đầu bằng cách tạo bài học ngữ pháp đầu tiên.'}
               </p>
               <Button
                 onClick={handleCreate}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Create Grammar
+                Thêm Ngữ Pháp
               </Button>
             </CardContent>
           </Card>
@@ -428,29 +428,29 @@ export default function Grammar() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {editingGrammar ? 'Edit Grammar Lesson' : 'Create New Grammar Lesson'}
+              {editingGrammar ? 'Chỉnh Sửa Bài Học Ngữ Pháp' : 'Tạo Bài Học Ngữ Pháp Mới'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="title">Title *</Label>
+                  <Label htmlFor="title">Tiêu Đề *</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
-                    placeholder="Enter grammar lesson title"
+                    placeholder="Nhập tiêu đề bài học ngữ pháp"
                     required
                   />
                 </div>
                 
                 <div className="md:col-span-2">
-                  <Label htmlFor="content">Content *</Label>
+                  <Label htmlFor="content">Nội Dung *</Label>
                   <textarea
                     id="content"
                     value={formData.content}
                     onChange={(e) => handleInputChange('content', e.target.value)}
-                    placeholder="Enter grammar lesson content with rules and explanations"
+                    placeholder="Nhập nội dung bài học ngữ pháp với quy tắc và giải thích"
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={8}
                     required
@@ -458,13 +458,13 @@ export default function Grammar() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="difficultyLevel">Difficulty Level</Label>
+                    <Label htmlFor="difficultyLevel">Mức Độ</Label>
                   <Select
                     value={formData.difficultyLevel}
                     onValueChange={(value) => handleInputChange('difficultyLevel', value as any)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select difficulty" />
+                      <SelectValue placeholder="Chọn mức độ" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Easy">Easy</SelectItem>
@@ -475,14 +475,14 @@ export default function Grammar() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Label htmlFor="orderIndex">Thứ Tự</Label>
                   <Input
                     id="orderIndex"
                     type="number"
                     min="0"
                     value={formData.orderIndex}
                     onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
-                    placeholder="Enter order index"
+                    placeholder="Nhập thứ tự"
                   />
                 </div>
               </div>
@@ -495,7 +495,7 @@ export default function Grammar() {
                   onChange={(e) => handleInputChange('isActive', e.target.checked)}
                   className="rounded border-slate-300"
                 />
-                <Label htmlFor="isActive">Active</Label>
+                <Label htmlFor="isActive">Hoạt Động</Label>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -505,14 +505,14 @@ export default function Grammar() {
                   variant="outline"
                   className="flex-1"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
                 <Button 
                   type="submit" 
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
                   disabled={formLoading}
                 >
-                  {formLoading ? 'Saving...' : (editingGrammar ? 'Update Grammar' : 'Create Grammar')}
+                  {formLoading ? 'Đang Lưu...' : (editingGrammar ? 'Cập Nhật Ngữ Pháp' : 'Tạo Ngữ Pháp')}
                 </Button>
               </div>
             </form>
@@ -527,7 +527,7 @@ export default function Grammar() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">
-                  Examples for "{selectedGrammar.title}"
+                  Ví Dụ Cho "{selectedGrammar.title}"
                 </h2>
                 <p className="text-slate-600 mt-1">
                   {selectedGrammar.content}
@@ -538,7 +538,7 @@ export default function Grammar() {
                 variant="outline"
                 size="sm"
               >
-                Close
+                Đóng
               </Button>
             </div>
 
@@ -549,14 +549,14 @@ export default function Grammar() {
                     <CardContent className="p-4">
                       <div className="space-y-3">
                         <div>
-                          <p className="text-sm font-medium text-slate-700 mb-1">English:</p>
+                          <p className="text-sm font-medium text-slate-700 mb-1">Tiếng Anh:</p>
                           <p className="text-slate-800 bg-white rounded-lg p-3 text-sm border">
                             {example.englishSentence}
                           </p>
                         </div>
                         
                         <div>
-                          <p className="text-sm font-medium text-slate-700 mb-1">Vietnamese:</p>
+                          <p className="text-sm font-medium text-slate-700 mb-1">Tiếng Việt:</p>
                           <p className="text-slate-800 bg-white rounded-lg p-3 text-sm border">
                             {example.vietnameseSentence}
                           </p>
@@ -564,7 +564,7 @@ export default function Grammar() {
                         
                         {example.explanation && (
                           <div>
-                            <p className="text-sm font-medium text-slate-700 mb-1">Explanation:</p>
+                            <p className="text-sm font-medium text-slate-700 mb-1">Giải Thích:</p>
                             <p className="text-slate-700 bg-green-50 rounded-lg p-3 text-sm border-l-4 border-green-200">
                               {example.explanation}
                             </p>
@@ -578,15 +578,15 @@ export default function Grammar() {
             ) : (
               <div className="text-center py-12">
                 <BookOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-slate-600 mb-2">No examples yet</h3>
+                <h3 className="text-lg font-medium text-slate-600 mb-2">Không có ví dụ</h3>
                 <p className="text-slate-500 mb-6">
-                  This grammar lesson doesn't have any examples yet.
+                  Bài học ngữ pháp này không có ví dụ.
                 </p>
                 <Button
                   onClick={() => setShowExamplesModal(false)}
                   className="bg-gradient-to-r from-blue-600 to-indigo-600"
                 >
-                  Close
+                  Đóng
                 </Button>
               </div>
             )}

@@ -400,10 +400,10 @@ export const BlogPosts: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                Blog Management
+                Quản Lý Bài Viết
               </h1>
               <p className="text-gray-600 mt-3 text-lg">
-                Create and manage engaging blog content for English learners
+                Tạo và quản lý nội dung bài viết hấp dẫn cho người học tiếng Anh
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -412,11 +412,11 @@ export const BlogPosts: React.FC = () => {
                 className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 <Plus className="h-4 w-4" />
-                <span>New Post</span>
+                <span>Bài Viết Mới</span>
               </button>
               <button className="flex items-center space-x-2 px-4 py-2 bg-white/50 backdrop-blur-sm text-gray-700 rounded-xl hover:bg-white/70 transition-all duration-200 border border-white/30">
                 <Settings className="h-4 w-4" />
-                <span>Settings</span>
+                <span>Cài Đặt</span>
               </button>
             </div>
           </div>
@@ -431,7 +431,7 @@ export const BlogPosts: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search blog posts..."
+              placeholder="Tìm kiếm bài viết..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -446,12 +446,12 @@ export const BlogPosts: React.FC = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none"
             >
-              <option value="all">All Categories</option>
-              <option value="1">Exam Preparation</option>
+                <option value="all">Tất Cả Chủ Đề</option>
+              <option value="1">Chuẩn Bị Thi</option>
               <option value="2">Grammar</option>
-              <option value="3">Business English</option>
-              <option value="4">Pronunciation</option>
-              <option value="5">Learning Methods</option>
+              <option value="3">Tiếng Anh Kinh Doanh</option>
+              <option value="4">Phát Âm</option>
+              <option value="5">Phương Pháp Học</option>
             </select>
           </div>
 
@@ -463,10 +463,10 @@ export const BlogPosts: React.FC = () => {
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none"
             >
-              <option value="all">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-              <option value="archived">Archived</option>
+              <option value="all">Tất Cả Trạng Thái</option>
+              <option value="published">Đã Xuất Bản</option>
+              <option value="draft">Nháp</option>
+              <option value="archived">Đã Lưu</option>
             </select>
           </div>
 
@@ -478,10 +478,10 @@ export const BlogPosts: React.FC = () => {
               onChange={(e) => setSelectedAuthor(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none"
             >
-              <option value="all">All Authors</option>
-              <option value="1">Sarah Johnson</option>
-              <option value="2">Michael Chen</option>
-              <option value="3">Emily Rodriguez</option>
+              <option value="all">Tất Cả Tác Giả</option>
+              <option value="1">Sarah Cồn</option>
+              <option value="2">Michael Cồn</option>
+              <option value="3">Emily Cồn</option>
             </select>
           </div>
         </div>
@@ -492,20 +492,20 @@ export const BlogPosts: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Blog Posts ({filteredBlogPosts.length})</h3>
-            <p className="text-gray-500 text-sm">Showing {filteredBlogPosts.length} of {blogPosts.length} posts</p>
+            <p className="text-gray-500 text-sm">Hiển thị {filteredBlogPosts.length} trên {blogPosts.length} bài viết</p>
           </div>
           <div className="flex items-center space-x-3">
             <button className="flex items-center space-x-2 px-3 py-2 bg-white/50 backdrop-blur-sm text-gray-700 rounded-lg hover:bg-white/70 transition-all duration-200 border border-white/30">
               <Download className="h-4 w-4" />
-              <span className="text-sm">Export</span>
+              <span className="text-sm">Xuất Dữ Liệu</span>
             </button>
             <button className="flex items-center space-x-2 px-3 py-2 bg-white/50 backdrop-blur-sm text-gray-700 rounded-lg hover:bg-white/70 transition-all duration-200 border border-white/30">
               <Upload className="h-4 w-4" />
-              <span className="text-sm">Import</span>
+              <span className="text-sm">Nhập Dữ Liệu</span>
             </button>
             <button className="flex items-center space-x-2 px-3 py-2 bg-white/50 backdrop-blur-sm text-gray-700 rounded-lg hover:bg-white/70 transition-all duration-200 border border-white/30">
               <RefreshCw className="h-4 w-4" />
-              <span className="text-sm">Refresh</span>
+              <span className="text-sm">Làm Mới</span>
             </button>
           </div>
         </div>
@@ -513,8 +513,8 @@ export const BlogPosts: React.FC = () => {
         {filteredBlogPosts.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No blog posts found</h3>
-            <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy bài viết</h3>
+            <p className="text-gray-500">Vui lòng điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -530,11 +530,11 @@ export const BlogPosts: React.FC = () => {
                           {post.status === 'Published' && (
                             <span className="inline-flex items-center px-2 py-3 rounded-full text-xs font-medium bg-green-100 text-green-800">
                               <CheckCircle className="h-3 w-3 mr-1" />
-                              Published
+                              Đã Xuất Bản
                             </span>
                           )}
                         </div>
-                        <p className="text-gray-600 mb-3 line-clamp-2">{post.excerpt || 'No excerpt available'}</p>
+                        <p className="text-gray-600 mb-3 line-clamp-2">{post.excerpt || 'Không có tóm tắt'}</p>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button className={`p-1 rounded-lg transition-colors ${
@@ -567,19 +567,19 @@ export const BlogPosts: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500">
                       <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4" />
-                        <span>{post.publishedAt ? formatDate(post.publishedAt) : 'Not published'}</span>
+                        <span>{post.publishedAt ? formatDate(post.publishedAt) : 'Không được xuất bản'}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Clock className="h-4 w-4" />
-                        <span>5 min read</span>
+                        <span>5 phút đọc</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <EyeIcon className="h-4 w-4" />
-                        <span>{post.viewCount} views</span>
+                        <span>{post.viewCount} lượt xem</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <MessageCircle className="h-4 w-4" />
-                        <span>{post.comments?.length || 0} comments</span>
+                        <span>{post.comments?.length || 0} bình luận</span>
                       </div>
                     </div>
                   </div>
@@ -590,12 +590,12 @@ export const BlogPosts: React.FC = () => {
                     <div className="flex items-center space-x-2">
                                               <img
                           src={post.author?.avatar || 'https://via.placeholder.com/32x32?text=U'}
-                          alt={post.author?.fullName || 'Unknown Author'}
+                          alt={post.author?.fullName || 'Tác Giả Không Xác Định'}
                           className="w-8 h-8 rounded-full object-cover"
                         />
                         <div className="text-right">
-                          <p className="text-sm font-medium text-gray-900">{post.author?.fullName || 'Unknown Author'}</p>
-                          <p className="text-xs text-gray-500">{post.category?.categoryName || 'Uncategorized'}</p>
+                          <p className="text-sm font-medium text-gray-900">{post.author?.fullName || 'Tác Giả Không Xác Định'}</p>
+                          <p className="text-xs text-gray-500">{post.category?.categoryName || 'Chủ Đề Không Xác Định'}</p>
                       </div>
                     </div>
 
@@ -639,13 +639,13 @@ export const BlogPosts: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {editingPost ? 'Edit Blog Post' : 'Create New Blog Post'}
+              {editingPost ? 'Chỉnh Sửa Bài Viết' : 'Tạo Bài Viết Mới'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <Label htmlFor="title">Title *</Label>
+                  <Label htmlFor="title">Tiêu Đề *</Label>
                   <Input
                     id="title"
                     value={formData.title}
@@ -655,7 +655,7 @@ export const BlogPosts: React.FC = () => {
                         handleInputChange('slug', generateSlug(e.target.value));
                       }
                     }}
-                    placeholder="Enter post title"
+                    placeholder="Nhập tiêu đề bài viết"
                     required
                   />
                 </div>
@@ -672,24 +672,24 @@ export const BlogPosts: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="excerpt">Excerpt</Label>
+                  <Label htmlFor="excerpt">Tóm Tắt</Label>
                   <textarea
                     id="excerpt"
                     value={formData.excerpt}
                     onChange={(e) => handleInputChange('excerpt', e.target.value)}
-                    placeholder="Brief description of the post"
+                    placeholder="Tóm tắt ngắn gọn bài viết"
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={3}
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="content">Content *</Label>
+                  <Label htmlFor="content">Nội Dung *</Label>
                   <textarea
                     id="content"
                     value={formData.content}
                     onChange={(e) => handleInputChange('content', e.target.value)}
-                    placeholder="Write your blog post content..."
+                    placeholder="Nhập nội dung bài viết"
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={8}
                     required
@@ -697,7 +697,7 @@ export const BlogPosts: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="categoryId">Category *</Label>
+                  <Label htmlFor="categoryId">Chủ Đề *</Label>
                   <select
                     id="categoryId"
                     value={formData.categoryId}
@@ -714,7 +714,7 @@ export const BlogPosts: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="status">Status *</Label>
+                  <Label htmlFor="status">Trạng Thái *</Label>
                   <select
                     id="status"
                     value={formData.status}
@@ -722,14 +722,14 @@ export const BlogPosts: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   >
-                    <option value="Draft">Draft</option>
-                    <option value="Published">Published</option>
-                    <option value="Archived">Archived</option>
+                    <option value="Draft">Nháp</option>
+                    <option value="Published">Đã Xuất Bản</option>
+                    <option value="Archived">Đã Lưu</option>
                   </select>
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="seoKeywords">SEO Keywords</Label>
+                    <Label htmlFor="seoKeywords">SEO Keywords</Label>
                   <Input
                     id="seoKeywords"
                     value={formData.seoKeywords}
@@ -757,7 +757,7 @@ export const BlogPosts: React.FC = () => {
                   disabled={formLoading}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
                 >
-                  {formLoading ? 'Saving...' : (editingPost ? 'Update Post' : 'Create Post')}
+                  {formLoading ? 'Đang Lưu...' : (editingPost ? 'Cập Nhật Bài Viết' : 'Tạo Bài Viết')}
                 </Button>
                 <Button
                   type="button"
@@ -765,7 +765,7 @@ export const BlogPosts: React.FC = () => {
                   onClick={() => setShowCreateModal(false)}
                   className="px-6 py-2"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
               </div>
             </form>

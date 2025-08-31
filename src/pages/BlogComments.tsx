@@ -213,10 +213,10 @@ export const BlogComments: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Blog Comments
+                Quản Lý Bình Luận
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Moderate and manage blog comments and discussions
+                Quản lý và kiểm duyệt bình luận bài viết
               </p>
             </div>
             <div className="flex gap-3">
@@ -225,7 +225,7 @@ export const BlogComments: React.FC = () => {
                 className="border-blue-200 text-blue-700 hover:bg-blue-50"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Moderation Tools
+                Công Cụ Kiểm Duyệt
               </Button>
             </div>
           </div>
@@ -237,7 +237,7 @@ export const BlogComments: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Comments</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Bình Luận</p>
                   <p className="text-3xl font-bold text-slate-900">{comments.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -251,7 +251,7 @@ export const BlogComments: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Approved</p>
+                  <p className="text-sm font-medium text-slate-600">Đã Duyệt</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {comments.filter(c => c.isActive).length}
                   </p>
@@ -267,7 +267,7 @@ export const BlogComments: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Pending</p>
+                  <p className="text-sm font-medium text-slate-600">Chờ Duyệt</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {comments.filter(c => !c.isActive).length}
                   </p>
@@ -283,7 +283,7 @@ export const BlogComments: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Rejected</p>
+                  <p className="text-sm font-medium text-slate-600">Từ Chối</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {comments.filter(c => !c.isActive).length}
                   </p>
@@ -304,7 +304,7 @@ export const BlogComments: React.FC = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search comments, authors, or posts..."
+                    placeholder="Tìm kiếm bình luận, tác giả, hoặc bài viết..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -315,21 +315,21 @@ export const BlogComments: React.FC = () => {
               <div className="flex gap-4">
                                   <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                     <SelectTrigger className="w-40">
-                      <SelectValue placeholder="All Status" />
+                      <SelectValue placeholder="Tất Cả Trạng Thái" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="all">Tất Cả Trạng Thái</SelectItem>
+                      <SelectItem value="active">Hoạt Động</SelectItem>
+                      <SelectItem value="inactive">Không Hoạt Động</SelectItem>
                     </SelectContent>
                   </Select>
 
                 <Select value={selectedPost} onValueChange={setSelectedPost}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="All Posts" />
+                    <SelectValue placeholder="Tất Cả Bài Viết" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Posts</SelectItem>
+                    <SelectItem value="all">Tất Cả Bài Viết</SelectItem>
                     {uniquePosts.map(post => (
                       <SelectItem key={post.id} value={post.id?.toString() || ''}>
                         {post.title}
@@ -367,17 +367,17 @@ export const BlogComments: React.FC = () => {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                                           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
-                      {comment.userId?.toString().charAt(0) || 'U'}
+                        {comment.userId?.toString().charAt(0) || 'Người Dùng'}
                     </div>
                                               <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-slate-900">User #{comment.userId}</h4>
+                            <h4 className="font-semibold text-slate-900">Người Dùng #{comment.userId}</h4>
                             <Badge variant={comment.isActive ? 'success' : 'secondary'} className="text-xs">
                               {comment.isActive ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-                              <span className="ml-1">{comment.isActive ? 'Active' : 'Inactive'}</span>
+                              <span className="ml-1">{comment.isActive ? 'Hoạt Động' : 'Không Hoạt Động'}</span>
                             </Badge>
                           </div>
-                          <p className="text-sm text-slate-500">User ID: {comment.userId}</p>
+                          <p className="text-sm text-slate-500">Người Dùng ID: {comment.userId}</p>
                         </div>
                     </div>
                     
@@ -391,7 +391,7 @@ export const BlogComments: React.FC = () => {
                             className="h-8 px-3 hover:bg-green-50 text-green-600"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
-                            Activate
+                            Kích Hoạt
                           </Button>
                         </>
                       )}
@@ -403,7 +403,7 @@ export const BlogComments: React.FC = () => {
                         className="h-8 px-3 hover:bg-red-50 text-red-600"
                       >
                         <Trash2 className="h-4 w-4 mr-1" />
-                        Delete
+                        Xóa
                       </Button>
                       
                       <Button
@@ -413,7 +413,7 @@ export const BlogComments: React.FC = () => {
                         className="h-8 px-3 hover:bg-blue-50 text-blue-600"
                       >
                         <Reply className="h-4 w-4 mr-1" />
-                        Reply
+                        Trả Lời
                       </Button>
                       
                       <Button
@@ -429,7 +429,7 @@ export const BlogComments: React.FC = () => {
 
                   <div className="mb-4">
                     <div className="text-sm text-slate-600 mb-2">
-                      <span className="font-medium">Post ID:</span> {comment.blogPostId}
+                      <span className="font-medium">Bài Viết ID:</span> {comment.blogPostId}
                     </div>
                     <p className="text-slate-800 bg-slate-50 rounded-lg p-3 border-l-4 border-blue-200">
                       {comment.content}
@@ -460,11 +460,11 @@ export const BlogComments: React.FC = () => {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <MessageCircle className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-600 mb-2">No comments found</h3>
+              <h3 className="text-xl font-semibold text-slate-600 mb-2">Không tìm thấy bình luận</h3>
               <p className="text-slate-500 mb-6">
                 {searchTerm || selectedStatus !== 'all' || selectedPost !== 'all'
-                  ? 'Try adjusting your search criteria or filters.'
-                  : 'No comments have been posted yet.'}
+                  ? 'Vui lòng điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc.'
+                  : 'Không có bình luận nào đã được đăng.'}
               </p>
             </CardContent>
           </Card>
@@ -476,24 +476,24 @@ export const BlogComments: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              Reply to Comment
+              Trả Lời Bình Luận
             </h2>
             
             <div className="mb-6 p-4 bg-slate-50 rounded-lg border">
               <p className="text-sm text-slate-600 mb-2">
-                                      <span className="font-medium">Original comment by User #{selectedComment.userId}:</span>
+                <span className="font-medium">Bình Luận Gốc Của Người Dùng #{selectedComment.userId}:</span>
               </p>
               <p className="text-slate-800">{selectedComment.content}</p>
             </div>
             
             <form onSubmit={handleSubmitReply} className="space-y-4">
               <div>
-                <Label htmlFor="replyContent">Your Reply *</Label>
+                <Label htmlFor="replyContent">Trả Lời Của Bạn *</Label>
                 <textarea
                   id="replyContent"
                   value={replyForm.content}
                   onChange={(e) => setReplyForm(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Write your reply..."
+                  placeholder="Viết trả lời của bạn..."
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   rows={4}
                   required
@@ -508,7 +508,7 @@ export const BlogComments: React.FC = () => {
                   onChange={(e) => setReplyForm(prev => ({ ...prev, isApproved: e.target.checked }))}
                   className="rounded border-slate-300"
                 />
-                <Label htmlFor="isApproved">Auto-approve this reply</Label>
+                <Label htmlFor="isApproved">Tự Động Duyệt Trả Lời</Label>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -518,14 +518,14 @@ export const BlogComments: React.FC = () => {
                   variant="outline"
                   className="flex-1"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
                 <Button 
                   type="submit" 
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
                   disabled={formLoading}
                 >
-                  {formLoading ? 'Posting Reply...' : 'Post Reply'}
+                  {formLoading ? 'Đang Gửi Trả Lời...' : 'Gửi Trả Lời'}
                 </Button>
               </div>
             </form>

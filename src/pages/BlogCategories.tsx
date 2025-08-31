@@ -170,10 +170,10 @@ export const BlogCategories: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Blog Categories
+                Quản Lý Chủ Đề Bài Viết
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Organize and manage blog content categories
+                Quản lý chủ đề bài viết và danh mục
               </p>
             </div>
             <Button
@@ -181,7 +181,7 @@ export const BlogCategories: React.FC = () => {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add Category
+              Thêm Chủ Đề
             </Button>
           </div>
         </div>
@@ -192,7 +192,7 @@ export const BlogCategories: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Categories</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Chủ Đề</p>
                   <p className="text-3xl font-bold text-slate-900">{categories.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -206,7 +206,7 @@ export const BlogCategories: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Categories</p>
+                  <p className="text-sm font-medium text-slate-600">Chủ Đề Hoạt Động</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {categories.filter(c => c.isActive).length}
                   </p>
@@ -222,7 +222,7 @@ export const BlogCategories: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Posts</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Bài Viết</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {categories.reduce((sum, c) => sum + (c.blogPosts?.length || 0), 0)}
                   </p>
@@ -238,7 +238,7 @@ export const BlogCategories: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Avg Posts/Category</p>
+                  <p className="text-sm font-medium text-slate-600">Trung Bình Bài Viết/Chủ Đề</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {categories.length > 0 ? Math.round(categories.reduce((sum, c) => sum + (c.blogPosts?.length || 0), 0) / categories.length) : 0}
                   </p>
@@ -259,7 +259,7 @@ export const BlogCategories: React.FC = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search categories..."
+                    placeholder="Tìm kiếm chủ đề..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -270,12 +270,12 @@ export const BlogCategories: React.FC = () => {
               <div className="flex gap-4">
                 <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Status" />
+                    <SelectValue placeholder="Tất Cả Trạng Thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="all">Tất Cả Trạng Thái</SelectItem>
+                    <SelectItem value="active">Hoạt Động</SelectItem>
+                    <SelectItem value="inactive">Không Hoạt Động</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -309,7 +309,7 @@ export const BlogCategories: React.FC = () => {
                     <div 
                       className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg"
                     >
-                      {category.categoryName?.charAt(0) || 'C'}
+                      {category.categoryName?.charAt(0) || 'Cồn Chủ Đề'}
                     </div>
                     
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -348,18 +348,18 @@ export const BlogCategories: React.FC = () => {
                       </Badge>
                       
                       <Badge variant={category.isActive ? 'success' : 'secondary'}>
-                        {category.isActive ? 'Active' : 'Inactive'}
+                        {category.isActive ? 'Hoạt Động' : 'Không Hoạt Động'}
                       </Badge>
                       
                       <Badge variant="outline">
-                        Order: {category.orderIndex}
+                        Thứ Tự: {category.orderIndex}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span className="flex items-center gap-1">
                         <FileText className="h-3 w-3" />
-                        {category.blogPosts?.length || 0} posts
+                        {category.blogPosts?.length || 0} bài viết
                       </span>
                       
                       <span className="flex items-center gap-1">
@@ -376,18 +376,18 @@ export const BlogCategories: React.FC = () => {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <FolderOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-600 mb-2">No categories found</h3>
+              <h3 className="text-xl font-semibold text-slate-600 mb-2">Không tìm thấy chủ đề</h3>
               <p className="text-slate-500 mb-6">
                 {searchTerm || selectedStatus !== 'all'
-                  ? 'Try adjusting your search criteria or filters.'
-                  : 'Get started by creating your first blog category.'}
+                  ? 'Vui lòng điều chỉnh tiêu chí tìm kiếm hoặc bộ lọc.'
+                  : 'Bắt đầu bằng cách tạo chủ đề đầu tiên.'}
               </p>
               <Button
                 onClick={handleCreate}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Create Category
+                Thêm Chủ Đề
               </Button>
             </CardContent>
           </Card>
@@ -399,13 +399,13 @@ export const BlogCategories: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {editingCategory ? 'Edit Category' : 'Create New Category'}
+              {editingCategory ? 'Chỉnh Sửa Chủ Đề' : 'Tạo Chủ Đề Mới'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="categoryName">Category Name *</Label>
+                  <Label htmlFor="categoryName">Tên Chủ Đề *</Label>
                   <Input
                     id="categoryName"
                     value={formData.categoryName}
@@ -415,7 +415,7 @@ export const BlogCategories: React.FC = () => {
                         handleInputChange('slug', generateSlug(e.target.value));
                       }
                     }}
-                    placeholder="Enter category name"
+                    placeholder="Nhập tên chủ đề"
                     required
                   />
                 </div>
@@ -432,38 +432,38 @@ export const BlogCategories: React.FC = () => {
                 </div>
                 
                 <div className="md:col-span-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Mô Tả</Label>
                   <textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Enter category description"
+                    placeholder="Nhập mô tả chủ đề"
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={3}
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Label htmlFor="orderIndex">Thứ Tự</Label>
                   <Input
                     id="orderIndex"
                     type="number"
                     min="0"
                     value={formData.orderIndex}
                     onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
-                    placeholder="Enter order index"
+                    placeholder="Nhập thứ tự"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Label htmlFor="orderIndex">Thứ Tự</Label>
                   <Input
                     id="orderIndex"
                     type="number"
                     min="0"
                     value={formData.orderIndex}
                     onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
-                    placeholder="Enter order index"
+                    placeholder="Nhập thứ tự"
                   />
                 </div>
               </div>
@@ -478,7 +478,7 @@ export const BlogCategories: React.FC = () => {
                   onChange={(e) => handleInputChange('isActive', e.target.checked)}
                   className="rounded border-slate-300"
                 />
-                <Label htmlFor="isActive">Active</Label>
+                <Label htmlFor="isActive">Hoạt Động</Label>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -488,14 +488,14 @@ export const BlogCategories: React.FC = () => {
                   variant="outline"
                   className="flex-1"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
                 <Button 
                   type="submit" 
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
                   disabled={formLoading}
                 >
-                  {formLoading ? 'Saving...' : (editingCategory ? 'Update Category' : 'Create Category')}
+                  {formLoading ? 'Đang Lưu...' : (editingCategory ? 'Cập Nhật Chủ Đề' : 'Tạo Chủ Đề')}
                 </Button>
               </div>
             </form>
