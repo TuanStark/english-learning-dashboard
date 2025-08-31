@@ -1,25 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Plus,
   Search,
-  Edit,
   Trash2,
   MessageCircle,
-  User,
   Calendar,
-  Eye,
   CheckCircle,
   XCircle,
-  AlertTriangle,
-  ThumbsUp,
-  ThumbsDown,
-  Flag,
   Reply,
-  Filter,
-  TrendingUp,
   Shield,
   Clock,
-  FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -162,17 +151,6 @@ export const BlogComments: React.FC = () => {
     }
   };
 
-  const handleReject = async (commentId: number) => {
-    try {
-      await blogCommentApi.updateComment(commentId, { isActive: false });
-      setComments(comments.map(c => 
-        c.id === commentId ? { ...c, isActive: false } : c
-      ));
-    } catch (error) {
-      console.error('Error rejecting comment:', error);
-    }
-  };
-
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       try {
@@ -182,24 +160,6 @@ export const BlogComments: React.FC = () => {
         console.error('Error deleting comment:', error);
         alert('Error deleting comment. Please try again.');
       }
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return 'success';
-      case 'pending': return 'warning';
-      case 'rejected': return 'destructive';
-      default: return 'secondary';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved': return <CheckCircle className="h-4 w-4" />;
-      case 'pending': return <Clock className="h-4 w-4" />;
-      case 'rejected': return <XCircle className="h-4 w-4" />;
-      default: return <AlertTriangle className="h-4 w-4" />;
     }
   };
 
