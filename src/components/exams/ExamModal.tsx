@@ -40,54 +40,54 @@ export default function ExamModal({
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">Tên Đề Thi *</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => onFormChange('title', e.target.value)}
-                placeholder="Enter exam title"
+                placeholder="Nhập tên đề thi"
                 required
               />
             </div>
             
             <div className="md:col-span-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Mô Tả</Label>
               <textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => onFormChange('description', e.target.value)}
-                placeholder="Enter exam description"
+                placeholder="Nhập mô tả đề thi"
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 rows={3}
               />
             </div>
             
             <div>
-              <Label htmlFor="duration">Duration (minutes) *</Label>
+              <Label htmlFor="duration">Thời Gian (phút) *</Label>
               <Input
                 id="duration"
                 type="number"
                 min="1"
                 value={formData.duration}
                 onChange={(e) => onFormChange('duration', parseInt(e.target.value) || 60)}
-                placeholder="Enter duration in minutes"
+                placeholder="Nhập thời gian đề thi (phút)"
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="difficulty">Difficulty Level</Label>
+              <Label htmlFor="difficulty">Mức Độ</Label>
               <Select
                 value={formData.difficulty}
                 onValueChange={(value) => onFormChange('difficulty', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select difficulty" />
+                  <SelectValue placeholder="Chọn mức độ" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Easy">Easy</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="Hard">Hard</SelectItem>
+                  <SelectItem value="Easy">Dễ</SelectItem>
+                  <SelectItem value="Medium">Trung Bình</SelectItem>
+                  <SelectItem value="Hard">Khó</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -101,7 +101,7 @@ export default function ExamModal({
               onChange={(e) => onFormChange('isActive', e.target.checked)}
               className="rounded border-slate-300"
             />
-            <Label htmlFor="isActive">Active</Label>
+            <Label htmlFor="isActive">Hoạt Động</Label>
           </div>
           
           <div className="flex gap-3 pt-4">
@@ -111,13 +111,13 @@ export default function ExamModal({
               variant="outline"
               className="flex-1"
             >
-              Cancel
+              Hủy Bỏ
             </Button>
             <Button 
               type="submit" 
               className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
             >
-              {isEditing ? 'Update Exam' : 'Create Exam'}
+              {isEditing ? 'Cập Nhật Đề Thi' : 'Tạo Đề Thi'}
             </Button>
           </div>
         </form>

@@ -250,10 +250,10 @@ export default function Users() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                User Management
+                Quản Lý Người Dùng
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage system users, roles, and permissions
+                Quản lý người dùng, vai trò và quyền hạn của hệ thống
               </p>
             </div>
             <Button
@@ -261,7 +261,7 @@ export default function Users() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add User
+              Thêm Người Dùng
             </Button>
           </div>
         </div>
@@ -272,7 +272,7 @@ export default function Users() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Users</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Người Dùng</p>
                   <p className="text-3xl font-bold text-slate-900">{Array.isArray(users) ? users.length : 0}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -286,7 +286,7 @@ export default function Users() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Users</p>
+                  <p className="text-sm font-medium text-slate-600">Người Dùng Hoạt Động</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {users.filter(u => u.status === 'active').length}
                   </p>
@@ -302,7 +302,7 @@ export default function Users() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Roles</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Vai Trò</p>
                   <p className="text-3xl font-bold text-slate-900">{roles.length}</p>
                 </div>
                 <div className="p-3 bg-purple-100 rounded-full">
@@ -316,7 +316,7 @@ export default function Users() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">New This Month</p>
+                  <p className="text-sm font-medium text-slate-600">Người Dùng Mới Trong Tháng</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {users.filter(u => {
                       const userDate = new Date(u.createdAt);
@@ -339,11 +339,11 @@ export default function Users() {
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Tìm kiếm</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
-                    placeholder="Search users..."
+                    placeholder="Tìm kiếm người dùng..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
@@ -352,13 +352,13 @@ export default function Users() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Vai Trò</label>
                 <select
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="all">All Roles</option>
+                  <option value="all">Tất Cả Vai Trò</option>
                   {roles.map(role => (
                     <option key={role.id} value={role.id}>{role.roleName}</option>
                   ))}
@@ -366,16 +366,16 @@ export default function Users() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Trạng Thái</label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="all">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="pending">Pending</option>
+                  <option value="all">Tất Cả Trạng Thái</option>
+                  <option value="active">Hoạt Động</option>
+                  <option value="inactive">Không Hoạt Động</option>
+                  <option value="pending">Chờ Xác Nhận</option>
                 </select>
               </div>
 
@@ -390,7 +390,7 @@ export default function Users() {
                   className="w-full border-slate-200 hover:bg-slate-50"
                 >
                   <Filter className="h-4 w-4 mr-2" />
-                  Clear Filters
+                    Xóa Bộ Lọc
                 </Button>
               </div>
             </div>

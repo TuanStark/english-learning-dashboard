@@ -239,7 +239,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                Dashboard
+                Bảng Điều Khiển
               </h1>
               <p className="text-gray-600 mt-3 text-lg">
                 Chào mừng bạn đến với hệ thống quản lý học tiếng Anh.
@@ -269,7 +269,7 @@ export const Dashboard: React.FC = () => {
                 <div className="flex items-center space-x-2 bg-blue-100/80 backdrop-blur-sm px-3 py-2 rounded-xl">
                   <Users className="h-4 w-4 text-blue-600" />
                   <span className="text-sm font-medium text-blue-800">
-                    {adminStats?.users?.active || 0} Active
+                    {adminStats?.users?.active || 0} Hoạt động
                   </span>
                 </div>
                 
@@ -277,7 +277,7 @@ export const Dashboard: React.FC = () => {
                 <div className="flex items-center space-x-2 bg-green-100/80 backdrop-blur-sm px-3 py-2 rounded-xl">
                   <Target className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-green-800">
-                    {adminStats?.exams?.totalAttempts?.toLocaleString() || 0} Attempts
+                    {adminStats?.exams?.totalAttempts?.toLocaleString() || 0} Lần thử
                   </span>
                 </div>
               </div>
@@ -307,7 +307,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center text-sm text-green-600">
             <TrendingUp className="h-4 w-4 mr-1" />
             +{adminStats?.users?.newThisMonth && adminStats?.users?.newThisWeek ? 
-              Math.round((adminStats.users.newThisMonth / (adminStats.users.newThisMonth - adminStats.users.newThisWeek)) * 100) : 12}% from last month
+              Math.round((adminStats.users.newThisMonth / (adminStats.users.newThisMonth - adminStats.users.newThisWeek)) * 100) : 12}% so với tháng trước
           </div>
         </div>
 
@@ -327,7 +327,7 @@ export const Dashboard: React.FC = () => {
           </div>
           <div className="flex items-center text-sm text-green-600">
             <TrendingUp className="h-4 w-4 mr-1" />
-            +{overallStats?.totalExams ? Math.round((overallStats.totalExams / 48) * 100 - 100) : 8}% from last month
+            +{overallStats?.totalExams ? Math.round((overallStats.totalExams / 48) * 100 - 100) : 8}% so với tháng trước
           </div>
         </div>
 

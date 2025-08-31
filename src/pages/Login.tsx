@@ -26,8 +26,8 @@ const Login: React.FC = () => {
               <div className="flex justify-center mb-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-primary-500/20">E</div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Welcome back</h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">Sign in to your account</p>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Chào mừng trở lại</h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Đăng nhập vào tài khoản của bạn</p>
             </div>
 
             {error && (
@@ -61,10 +61,10 @@ const Login: React.FC = () => {
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Password
+                    Mật khẩu
                   </label>
                   <Link to="/forgot-password" className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
-                    Forgot password?
+                    Quên mật khẩu?
                   </Link>
                 </div>
                 <div className="relative">
@@ -92,10 +92,10 @@ const Login: React.FC = () => {
                   {isLoading ? (
                     <>
                       <Loader2 size={16} className="animate-spin mr-2" />
-                      Signing in...
+                      Đang đăng nhập...
                     </>
                   ) : (
-                    'Sign in'
+                    'Đăng nhập'
                   )}
                 </button>
               </div>

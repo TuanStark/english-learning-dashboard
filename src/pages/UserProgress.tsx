@@ -225,10 +225,10 @@ export default function UserProgress() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                User Progress Analytics
+                Phân Tích Tiến Độ Học Tập
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Monitor and analyze user learning progress across all modules
+                Theo dõi và phân tích tiến độ học tập của người dùng trên tất cả các mô-đun
               </p>
             </div>
             <div className="flex gap-3">
@@ -238,14 +238,14 @@ export default function UserProgress() {
                 className="flex items-center gap-2"
               >
                 <RefreshCw className="h-4 w-4" />
-                Refresh Data
+                Làm Mới Dữ Liệu
               </Button>
               <Button
                 onClick={exportProgressData}
                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
               >
                 <Download className="h-4 w-4 mr-2" />
-                Export Report
+                Xuất Báo Cáo
               </Button>
             </div>
           </div>
@@ -257,7 +257,7 @@ export default function UserProgress() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Users</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Người Dùng</p>
                   <p className="text-3xl font-bold text-slate-900">{users.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -271,7 +271,7 @@ export default function UserProgress() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Learners</p>
+                  <p className="text-sm font-medium text-slate-600">Người Dùng Hoạt Động</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {progressData.filter(p => p.overallProgress > 0.3).length}
                   </p>
@@ -287,7 +287,7 @@ export default function UserProgress() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Avg Progress</p>
+                  <p className="text-sm font-medium text-slate-600">Tiến Độ Trung Bình</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {(progressData.reduce((sum, p) => sum + p.overallProgress, 0) / progressData.length * 100).toFixed(1)}%
                   </p>
@@ -303,7 +303,7 @@ export default function UserProgress() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Top Performers</p>
+                  <p className="text-sm font-medium text-slate-600">Người Dùng Thành Tích Cao</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {progressData.filter(p => p.overallProgress > 0.8).length}
                   </p>
@@ -324,7 +324,7 @@ export default function UserProgress() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search users by name or email..."
+                    placeholder="Tìm kiếm người dùng theo tên hoặc email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -335,10 +335,10 @@ export default function UserProgress() {
               <div className="flex gap-4">
                 <Select value={selectedUser} onValueChange={setSelectedUser}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Users" />
+                    <SelectValue placeholder="Tất Cả Người Dùng" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Users</SelectItem>
+                    <SelectItem value="all">Tất Cả Người Dùng</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id.toString()}>
                         {user.fullName}
@@ -349,7 +349,7 @@ export default function UserProgress() {
 
                 <Select value={selectedProgressType} onValueChange={setSelectedProgressType}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Progress" />
+                    <SelectValue placeholder="Tất Cả Tiến Độ" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Progress</SelectItem>

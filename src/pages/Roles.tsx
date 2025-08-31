@@ -176,10 +176,10 @@ export default function Roles() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Roles Management
+                Quản Lý Vai Trò
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage user roles and permissions for the system
+                Quản lý vai trò và quyền hạn của hệ thống
               </p>
             </div>
             <Button
@@ -187,7 +187,7 @@ export default function Roles() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add New Role
+              Thêm Vai Trò
             </Button>
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function Roles() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Roles</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Vai Trò</p>
                   <p className="text-3xl font-bold text-slate-900">{roles.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -212,7 +212,7 @@ export default function Roles() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Admin Roles</p>
+                  <p className="text-sm font-medium text-slate-600">Vai Trò Admin</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {roles.filter(r => r.roleName?.toLowerCase() === 'admin').length}
                   </p>
@@ -228,7 +228,7 @@ export default function Roles() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Teacher Roles</p>
+                  <p className="text-sm font-medium text-slate-600">Vai Trò Giáo Viên</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {roles.filter(r => r.roleName?.toLowerCase() === 'teacher').length}
                   </p>
@@ -244,7 +244,7 @@ export default function Roles() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Student Roles</p>
+                  <p className="text-sm font-medium text-slate-600">Vai Trò Học Sinh</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {roles.filter(r => r.roleName?.toLowerCase() === 'student').length}
                   </p>
@@ -263,7 +263,7 @@ export default function Roles() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input
-                placeholder="Search roles by name or description..."
+                placeholder="Tìm kiếm vai trò theo tên hoặc mô tả..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -399,24 +399,24 @@ export default function Roles() {
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="roleName">Role Name *</Label>
+                <Label htmlFor="roleName">Tên Vai Trò *</Label>
                 <Input
                   id="roleName"
                   value={formData.roleName}
                   onChange={(e) => handleInputChange('roleName', e.target.value)}
-                  placeholder="Enter role name (e.g., Admin, Teacher, Student)"
+                  placeholder="Nhập tên vai trò (ví dụ: Admin, Giáo Viên, Học Sinh)"
                   className="w-full"
                   required
                 />
               </div>
               
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Mô Tả</Label>
                 <textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder="Enter role description..."
+                  placeholder="Nhập mô tả vai trò..."
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   rows={3}
                 />
@@ -429,14 +429,14 @@ export default function Roles() {
                   variant="outline"
                   className="flex-1"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
                 <Button 
                   type="submit" 
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
                   disabled={formLoading}
                 >
-                  {formLoading ? 'Saving...' : (editingRole ? 'Update Role' : 'Create Role')}
+                  {formLoading ? 'Đang Lưu...' : (editingRole ? 'Cập Nhật Vai Trò' : 'Tạo Vai Trò')}
                 </Button>
               </div>
             </form>

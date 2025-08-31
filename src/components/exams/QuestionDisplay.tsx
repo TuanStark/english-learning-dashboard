@@ -61,7 +61,7 @@ export default function QuestionDisplay({
             onClick={() => onEditQuestion(question)}
             className="text-xs h-7 px-2"
           >
-            Edit
+            Chỉnh Sửa
           </Button>
           <Button
             size="sm"
@@ -69,7 +69,7 @@ export default function QuestionDisplay({
             onClick={() => onDuplicateQuestion(question, examId)}
             className="text-xs h-7 px-2 text-green-600 hover:text-green-700"
           >
-            Duplicate
+            Sao Chép
           </Button>
           
           <Badge variant={getQuestionTypeColor(question.questionType)}>
@@ -77,7 +77,7 @@ export default function QuestionDisplay({
           </Badge>
           
           <span className="text-sm text-slate-600">
-            Points: {question.points}
+            Điểm: {question.points}
           </span>
         </div>
       </div>

@@ -172,10 +172,10 @@ export default function VocabularyTopics() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Vocabulary Topics Management
+                Quản Lý Chủ Đề Từ Vựng
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage vocabulary topics and categories
+                Quản lý chủ đề từ vựng và danh mục
               </p>
             </div>
             <Button
@@ -183,7 +183,7 @@ export default function VocabularyTopics() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add Topic
+              Thêm Chủ Đề
             </Button>
           </div>
         </div>
@@ -194,7 +194,7 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Topics</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Chủ Đề</p>
                   <p className="text-3xl font-bold text-slate-900">{topics.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -208,7 +208,7 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Words</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Từ Vựng</p>
                   <p className="text-3xl font-bold text-slate-900">{vocabularies.length}</p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-full">
@@ -222,7 +222,7 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Active Topics</p>
+                  <p className="text-sm font-medium text-slate-600">Chủ Đề Hoạt Động</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {topics.filter(t => t.isActive).length}
                   </p>
@@ -238,7 +238,7 @@ export default function VocabularyTopics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Avg Words/Topic</p>
+                  <p className="text-sm font-medium text-slate-600">Từ Vựng/Chủ Đề Trung Bình</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {topics.length > 0 ? Math.round(vocabularies.length / topics.length) : 0}
                   </p>
@@ -259,7 +259,7 @@ export default function VocabularyTopics() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search topics..."
+                    placeholder="Tìm kiếm chủ đề..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -331,18 +331,18 @@ export default function VocabularyTopics() {
 
                     <div className="flex flex-wrap gap-2">
                       <Badge variant={topic.isActive ? 'success' : 'secondary'}>
-                        {topic.isActive ? 'Active' : 'Inactive'}
+                        {topic.isActive ? 'Hoạt Động' : 'Không Hoạt Động'}
                       </Badge>
                       
                       <Badge variant="outline">
-                        Order: {topic.orderIndex}
+                        Thứ Tự: {topic.orderIndex}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-slate-500">
                       <span className="flex items-center gap-1">
                         <Book className="h-4 w-4" />
-                        {getVocabularyCount(topic.id)} words
+                        {getVocabularyCount(topic.id)} từ vựng
                       </span>
                       
                       <span className="flex items-center gap-1">
@@ -359,10 +359,10 @@ export default function VocabularyTopics() {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <FolderOpen className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-600 mb-2">No topics found</h3>
+                <h3 className="text-xl font-semibold text-slate-600 mb-2">Không tìm thấy chủ đề</h3>
               <p className="text-slate-500 mb-6">
                 {searchTerm
-                  ? 'Try adjusting your search criteria.'
+                  ? 'Hãy điều chỉnh tiêu chí tìm kiếm của bạn.'
                   : 'Get started by creating your first vocabulary topic.'}
               </p>
               <Button
@@ -370,7 +370,7 @@ export default function VocabularyTopics() {
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Create Topic
+                Tạo Chủ Đề
               </Button>
             </CardContent>
           </Card>
@@ -382,53 +382,53 @@ export default function VocabularyTopics() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {editingTopic ? 'Edit Topic' : 'Create New Topic'}
+              {editingTopic ? 'Chỉnh Sửa Chủ Đề' : 'Tạo Chủ Đề Mới'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="topicName">Topic Name *</Label>
+                  <Label htmlFor="topicName">Tên Chủ Đề *</Label>
                   <Input
                     id="topicName"
                     value={formData.topicName}
                     onChange={(e) => handleInputChange('topicName', e.target.value)}
-                    placeholder="Enter topic name"
+                    placeholder="Nhập tên chủ đề"
                     required
                   />
                 </div>
                 
                 <div className="md:col-span-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Mô Tả</Label>
                   <textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Enter topic description"
+                    placeholder="Nhập mô tả chủ đề"
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={3}
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="image">Image URL</Label>
+                  <Label htmlFor="image">URL Hình Ảnh</Label>
                   <Input
                     id="image"
                     value={formData.image}
                     onChange={(e) => handleInputChange('image', e.target.value)}
-                    placeholder="Enter image URL"
+                    placeholder="Nhập URL hình ảnh"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="orderIndex">Order Index</Label>
+                  <Label htmlFor="orderIndex">Thứ Tự</Label>
                   <Input
                     id="orderIndex"
                     type="number"
                     min="0"
                     value={formData.orderIndex}
                     onChange={(e) => handleInputChange('orderIndex', parseInt(e.target.value) || 0)}
-                    placeholder="Enter order index"
+                    placeholder="Nhập thứ tự"
                   />
                 </div>
               </div>
@@ -441,7 +441,7 @@ export default function VocabularyTopics() {
                   onChange={(e) => handleInputChange('isActive', e.target.checked)}
                   className="rounded border-slate-300"
                 />
-                <Label htmlFor="isActive">Active</Label>
+                <Label htmlFor="isActive">Hoạt Động</Label>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -451,14 +451,14 @@ export default function VocabularyTopics() {
                   variant="outline"
                   className="flex-1"
                 >
-                  Cancel
+                  Hủy Bỏ
                 </Button>
                 <Button 
                   type="submit" 
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
                   disabled={formLoading}
                 >
-                  {formLoading ? 'Saving...' : (editingTopic ? 'Update Topic' : 'Create Topic')}
+                  {formLoading ? 'Đang Lưu...' : (editingTopic ? 'Cập Nhật Chủ Đề' : 'Tạo Chủ Đề')}
                 </Button>
               </div>
             </form>

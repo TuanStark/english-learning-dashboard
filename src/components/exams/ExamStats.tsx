@@ -12,7 +12,7 @@ export default function ExamStats({ exams }: ExamStatsProps) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-600">Total Exams</p>
+              <p className="text-sm font-medium text-slate-600">Tổng Đề Thi</p>
               <p className="text-3xl font-bold text-slate-900">{exams.length}</p>
             </div>
             <div className="p-3 bg-blue-100 rounded-full">
@@ -26,7 +26,7 @@ export default function ExamStats({ exams }: ExamStatsProps) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-600">Easy Level</p>
+              <p className="text-sm font-medium text-slate-600">Mức Độ Dễ</p>
               <p className="text-3xl font-bold text-slate-900">
                 {exams.filter(e => e.difficulty === 'Easy').length}
               </p>
@@ -42,7 +42,7 @@ export default function ExamStats({ exams }: ExamStatsProps) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-600">Medium Level</p>
+              <p className="text-sm font-medium text-slate-600">Mức Độ Trung Bình</p>
               <p className="text-3xl font-bold text-slate-900">
                 {exams.filter(e => e.difficulty === 'Medium').length}
               </p>
@@ -58,7 +58,7 @@ export default function ExamStats({ exams }: ExamStatsProps) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-600">Hard Level</p>
+              <p className="text-sm font-medium text-slate-600">Mức Độ Khó</p>
               <p className="text-3xl font-bold text-slate-900">
                 {exams.filter(e => e.difficulty === 'Hard').length}
               </p>

@@ -102,7 +102,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           </div>
           <div className="hidden sm:block">
             <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-              English Learning
+              Học Tiếng Anh
             </h1>
             <p className="text-xs text-gray-500 -mt-1">Hệ thống quản lý</p>
           </div>
@@ -144,11 +144,14 @@ export function Header({ onMenuClick }: HeaderProps) {
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-medium text-gray-900">{user?.fullName || 'User'}</p>
+                <p className="text-sm font-medium text-gray-900">{user?.fullName || 'Người Dùng'}</p>
                 <div className="flex items-center space-x-1">
                   {getRoleIcon(user?.role)}
                   <span className={`text-xs px-2 py-0.5 rounded-full border ${getRoleColor(user?.role)}`}>
-                    {typeof user?.role === 'string' ? user.role : (user?.role as any)?.roleName || 'User'}
+                    {(() => {
+                      const roleStr = typeof user?.role === 'string' ? user.role : (user?.role as any)?.roleName || 'User';
+                      return roleStr === 'admin' ? 'Quản Trị Viên' : roleStr === 'teacher' ? 'Giáo Viên' : roleStr === 'student' ? 'Học Sinh' : 'Người Dùng';
+                    })()}
                   </span>
                 </div>
               </div>
@@ -176,12 +179,15 @@ export function Header({ onMenuClick }: HeaderProps) {
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-900">{user?.fullName || 'User Name'}</p>
+                  <p className="font-semibold text-gray-900">{user?.fullName || 'Tên Người Dùng'}</p>
                   <p className="text-sm text-gray-600">{user?.email || 'user@example.com'}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     {getRoleIcon(user?.role)}
                     <span className={`text-xs px-2 py-1 rounded-full border ${getRoleColor(user?.role)}`}>
-                      {typeof user?.role === 'string' ? user.role : (user?.role as any)?.roleName || 'User'}
+                      {(() => {
+                        const roleStr = typeof user?.role === 'string' ? user.role : (user?.role as any)?.roleName || 'User';
+                        return roleStr === 'admin' ? 'Quản Trị Viên' : roleStr === 'teacher' ? 'Giáo Viên' : roleStr === 'student' ? 'Học Sinh' : 'Người Dùng';
+                      })()}
                     </span>
                   </div>
                 </div>

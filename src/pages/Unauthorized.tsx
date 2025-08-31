@@ -12,19 +12,19 @@ export function Unauthorized() {
           <div className="flex justify-center mb-4">
             <ShieldX className="h-12 w-12 text-destructive" />
           </div>
-          <CardTitle className="text-2xl">Access Denied</CardTitle>
+          <CardTitle className="text-2xl">Truy Cập Bị Từ Chối</CardTitle>
           <CardDescription>
-            You don't have permission to access this page
+            Bạn không có quyền truy cập trang này
           </CardDescription>
         </CardHeader>
         <CardContent className="text-center">
           <p className="text-sm text-muted-foreground mb-6">
-            This page is restricted to administrators only. Please contact your system administrator if you believe this is an error.
+            Trang này chỉ dành cho quản trị viên. Vui lòng liên hệ quản trị viên hệ thống nếu bạn cho rằng đây là lỗi.
           </p>
           <Button asChild>
             <Link to="/dashboard">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
+              Quay Lại Bảng Điều Khiển
             </Link>
           </Button>
         </CardContent>

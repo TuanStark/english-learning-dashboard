@@ -101,7 +101,7 @@ export function ImportDemo() {
             <Icon className="h-6 w-6" />
           </div>
           <Badge variant="secondary" className="text-xs">
-            {importType.toUpperCase()}
+            {importType === 'vocabulary' ? 'TỪ VỰNG' : importType === 'exam' ? 'BÀI KIỂM TRA' : 'NGƯỜI DÙNG'}
           </Badge>
         </div>
         <CardTitle className="text-lg mt-3">{title}</CardTitle>
@@ -121,7 +121,7 @@ export function ImportDemo() {
             <label htmlFor={`file-${importType}`} className="cursor-pointer">
               <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
               <p className="text-sm text-gray-600">
-                {selectedFile ? selectedFile.name : 'Click để chọn file'}
+                {selectedFile ? selectedFile.name : 'Nhấp để chọn file'}
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 CSV, Excel, hoặc JSON (tối đa 10MB)
@@ -169,7 +169,7 @@ export function ImportDemo() {
               className="flex-1"
             >
               <Download className="h-4 w-4 mr-1" />
-              Template
+              Mẫu file
             </Button>
             <Button 
               onClick={() => handleImport(importType)}
@@ -203,7 +203,7 @@ export function ImportDemo() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-            Import Demo System
+            Hệ Thống Import Demo
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Hệ thống demo import dữ liệu với giao diện hiện đại và dễ sử dụng
@@ -307,7 +307,7 @@ export function ImportDemo() {
                 <h4 className="font-medium mb-3 text-blue-800">📋 Các bước import dữ liệu:</h4>
                 <ol className="list-decimal list-inside space-y-2 text-sm text-blue-700">
                   <li>Chọn loại dữ liệu muốn import</li>
-                  <li>Tải file template để xem định dạng chính xác</li>
+                  <li>Tải file mẫu để xem định dạng chính xác</li>
                   <li>Chuẩn bị dữ liệu theo đúng định dạng</li>
                   <li>Upload file và chờ hệ thống xử lý</li>
                   <li>Xem kết quả import và xử lý lỗi nếu có</li>

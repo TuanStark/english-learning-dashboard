@@ -240,10 +240,10 @@ export default function Vocabulary() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-                Vocabulary Management
+                Quản Lý Từ Vựng
               </h1>
               <p className="text-slate-600 mt-2 text-lg">
-                Manage vocabulary words, topics, and difficulty levels
+                Quản lý từ vựng, chủ đề và mức độ khó dễ
               </p>
             </div>
             <Button
@@ -251,7 +251,7 @@ export default function Vocabulary() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Add Vocabulary
+              Thêm Từ Vựng
             </Button>
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function Vocabulary() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Words</p>
+                  <p className="text-sm font-medium text-slate-600">Tổng Từ Vựng</p>
                   <p className="text-3xl font-bold text-slate-900">{vocabularies.length}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -276,7 +276,7 @@ export default function Vocabulary() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Easy Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Dễ</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {vocabularies.filter(v => v.difficultyLevel === 'Easy').length}
                   </p>
@@ -292,7 +292,7 @@ export default function Vocabulary() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Medium Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Trung Bình</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {vocabularies.filter(v => v.difficultyLevel === 'Medium').length}
                   </p>
@@ -308,7 +308,7 @@ export default function Vocabulary() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Hard Level</p>
+                  <p className="text-sm font-medium text-slate-600">Mức Độ Khó</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {vocabularies.filter(v => v.difficultyLevel === 'Hard').length}
                   </p>
@@ -329,7 +329,7 @@ export default function Vocabulary() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
-                    placeholder="Search vocabularies..."
+                    placeholder="Tìm kiếm từ vựng..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -340,10 +340,10 @@ export default function Vocabulary() {
               <div className="flex gap-4">
                 <Select value={selectedTopic} onValueChange={setSelectedTopic}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Topics" />
+                    <SelectValue placeholder="Tất Cả Chủ Đề" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Topics</SelectItem>
+                    <SelectItem value="all">Tất Cả Chủ Đề</SelectItem>
                     {topics.map((topic) => (
                       <SelectItem key={topic.id} value={topic.id.toString()}>
                         {topic.topicName}
@@ -354,10 +354,10 @@ export default function Vocabulary() {
 
                 <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="All Difficulties" />
+                    <SelectValue placeholder="Tất Cả Mức Độ" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Difficulties</SelectItem>
+                    <SelectItem value="all">Tất Cả Mức Độ</SelectItem>
                     <SelectItem value="Easy">Easy</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
                     <SelectItem value="Hard">Hard</SelectItem>

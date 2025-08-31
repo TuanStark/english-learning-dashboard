@@ -16,7 +16,7 @@ export default function ExamTabs({ activeTab, onTabChange }: ExamTabsProps) {
           className={`flex-1 ${activeTab === 'exams' ? 'bg-blue-600 text-white' : 'text-slate-600'}`}
         >
           <FileText className="h-4 w-4 mr-2" />
-          Exams
+          Đề Thi
         </Button>
         <Button
           variant={activeTab === 'attempts' ? 'default' : 'ghost'}
@@ -24,7 +24,7 @@ export default function ExamTabs({ activeTab, onTabChange }: ExamTabsProps) {
           className={`flex-1 ${activeTab === 'attempts' ? 'bg-blue-600 text-white' : 'text-slate-600'}`}
         >
           <BarChart3 className="h-4 w-4 mr-2" />
-          Attempts
+          Làm Bài Thi
         </Button>
       </div>
     </div>

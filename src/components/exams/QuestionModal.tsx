@@ -42,12 +42,12 @@ export default function QuestionModal({
         
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="content">Question Content *</Label>
+            <Label htmlFor="content">Nội Dung Câu Hỏi *</Label>
             <textarea
               id="content"
               value={formData.content}
               onChange={(e) => onFormChange('content', e.target.value)}
-              placeholder="Enter question content"
+              placeholder="Nhập nội dung câu hỏi"
               className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               rows={4}
               required
@@ -56,13 +56,13 @@ export default function QuestionModal({
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="questionType">Question Type</Label>
+              <Label htmlFor="questionType">Loại Câu Hỏi</Label>
               <Select
                 value={formData.questionType}
                 onValueChange={(value) => onFormChange('questionType', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Chọn loại câu hỏi" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>
@@ -73,20 +73,20 @@ export default function QuestionModal({
             </div>
             
             <div>
-              <Label htmlFor="orderIndex">Order Index</Label>
+              <Label htmlFor="orderIndex">Thứ Tự</Label>
               <Input
                 id="orderIndex"
                 type="number"
                 min="1"
                 value={formData.orderIndex}
                 onChange={(e) => onFormChange('orderIndex', parseInt(e.target.value) || 1)}
-                placeholder="Order"
+                placeholder="Nhập thứ tự"
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="points">Points</Label>
+              <Label htmlFor="points">Điểm</Label>
               <Input
                 id="points"
                 type="number"
@@ -94,7 +94,7 @@ export default function QuestionModal({
                 step="0.1"
                 value={formData.points}
                 onChange={(e) => onFormChange('points', parseFloat(e.target.value) || 1.0)}
-                placeholder="Points"
+                placeholder="Nhập điểm"
                 required
               />
             </div>
@@ -107,13 +107,13 @@ export default function QuestionModal({
               variant="outline"
               className="flex-1"
             >
-              Cancel
+              Hủy Bỏ
             </Button>
             <Button 
               type="submit" 
               className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
             >
-              {isEditing ? 'Update Question' : 'Create Question'}
+              {isEditing ? 'Cập Nhật Câu Hỏi' : 'Tạo Câu Hỏi'}
             </Button>
           </div>
         </form>

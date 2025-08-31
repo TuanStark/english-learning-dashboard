@@ -18,14 +18,7 @@ import {
   Shield,
   Target,
   MessageSquare,
-  Brain,
-  BarChart3,
-  Lightbulb,
-  BookOpenCheck,
   MessageCircle,
-  Route,
-  GitBranch,
-  Bot,
   TrendingUp,
   CheckSquare,
 } from 'lucide-react';
@@ -45,25 +38,25 @@ interface NavigationItem {
   roles?: string[]; // Roles that can access this menu item
 }
 
-// Single navigation with role-based access control
-const navigation: NavigationItem[] = [
-  { 
-    name: 'Dashboard', 
-    href: '/dashboard', 
-    icon: LayoutDashboard,
-    badge: 'Overview',
-    roles: ['admin', 'teacher', 'student'] // All roles can access dashboard
-  },
+  // Single navigation with role-based access control
+  const navigation: NavigationItem[] = [
+    { 
+      name: 'Dashboard', 
+      href: '/dashboard', 
+      icon: LayoutDashboard,
+      badge: 'Tổng Quan',
+      roles: ['admin', 'teacher', 'student'] // All roles can access dashboard
+    },
   
   // User Management - Admin only
   {
-    name: 'User Management',
+    name: 'Quản Lý Người Dùng',
     icon: Users,
     roles: ['admin'],
     children: [
-      { name: 'Users', href: '/users', icon: Users, badge: 'Manage', roles: ['admin'] },
-      { name: 'Roles', href: '/roles', icon: Shield, badge: 'Permissions', roles: ['admin'] },
-      { name: 'User Progress', href: '/user-progress', icon: TrendingUp, badge: 'Analytics', roles: ['admin'] },
+      { name: 'Người Dùng', href: '/users', icon: Users, badge: 'Quản Lý', roles: ['admin'] },
+      { name: 'Vai Trò', href: '/roles', icon: Shield, badge: 'Quyền Hạn', roles: ['admin'] },
+      { name: 'Tiến Độ Người Dùng', href: '/user-progress', icon: TrendingUp, badge: 'Phân Tích', roles: ['admin'] },
     ]
   },
 
@@ -81,49 +74,49 @@ const navigation: NavigationItem[] = [
 
   // Vocabulary - Admin & Teacher can manage, Student can learn
   {
-    name: 'Vocabulary',
+    name: 'Từ Vựng',
     icon: Book,
     roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Vocabulary Words', href: '/vocabulary', icon: Book, badge: 'Words', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Vocabulary Topics', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Categories', roles: ['admin', 'teacher'] },
+      { name: 'Từ Vựng', href: '/vocabulary', icon: Book, badge: 'Từ', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Chủ Đề Từ Vựng', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Danh Mục', roles: ['admin', 'teacher'] },
       // { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage', roles: ['admin', 'teacher'] },
     ]
   },
 
   // Exam System - Admin & Teacher can manage, Student can take
   {
-    name: 'Exam System',
+    name: 'Hệ Thống Kiểm Tra',
     icon: FileText,
     roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Exams', href: '/exams', icon: FileText, badge: 'Tests', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Questions', href: '/questions', icon: HelpCircle, badge: 'Items', roles: ['admin', 'teacher'] },
-      { name: 'Answer Options', href: '/answer-options', icon: CheckSquare, badge: 'Answers', roles: ['admin', 'teacher'] },
-      { name: 'Exam Attempts', href: '/exam-attempts', icon: Target, badge: 'Results', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Bài Kiểm Tra', href: '/exams', icon: FileText, badge: 'Kiểm Tra', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Câu Hỏi', href: '/questions', icon: HelpCircle, badge: 'Câu Hỏi', roles: ['admin', 'teacher'] },
+      { name: 'Đáp Án', href: '/answer-options', icon: CheckSquare, badge: 'Đáp Án', roles: ['admin', 'teacher'] },
+      { name: 'Lần Thi', href: '/exam-attempts', icon: Target, badge: 'Kết Quả', roles: ['admin', 'teacher', 'student'] },
     ]
   },
 
   // Grammar - Admin & Teacher can manage, Student can learn
   {
-    name: 'Grammar',
+    name: 'Ngữ Pháp',
     icon: BookOpen,
     roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Grammar Rules', href: '/grammar', icon: BookOpen, badge: 'Rules', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Quy Tắc Ngữ Pháp', href: '/grammar', icon: BookOpen, badge: 'Quy Tắc', roles: ['admin', 'teacher', 'student'] },
       // { name: 'Grammar Examples', href: '/grammar-examples', icon: Lightbulb, badge: 'Examples', roles: ['admin', 'teacher'] },
     ]
   },
 
   // Content Management - Admin & Teacher
   {
-    name: 'Blog Management',
+    name: 'Quản Lý Blog',
     icon: MessageSquare,
     roles: ['admin', 'teacher'],
     children: [
-      { name: 'Blog Posts', href: '/blog-posts', icon: FileText, badge: 'Articles', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Blog Categories', href: '/blog-categories', icon: FolderOpen, badge: 'Topics', roles: ['admin', 'teacher'] },
-      { name: 'Blog Comments', href: '/blog-comments', icon: MessageCircle, badge: 'Feedback', roles: ['admin', 'teacher'] },
+      { name: 'Bài Viết Blog', href: '/blog-posts', icon: FileText, badge: 'Bài Viết', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Danh Mục Blog', href: '/blog-categories', icon: FolderOpen, badge: 'Chủ Đề', roles: ['admin', 'teacher'] },
+      { name: 'Bình Luận Blog', href: '/blog-comments', icon: MessageCircle, badge: 'Phản Hồi', roles: ['admin', 'teacher'] },
     ]
   },
 
@@ -152,12 +145,12 @@ const navigation: NavigationItem[] = [
 
   // System Tools - Admin only
   {
-    name: 'System Tools',
+    name: 'Công Cụ Hệ Thống',
     icon: Settings,
     roles: ['admin'],
     children: [
       { name: 'Import Demo', href: '/import-demo', icon: Upload, badge: 'Demo', roles: ['admin'] },
-      { name: 'Settings', href: '/settings', icon: Settings, badge: 'Config', roles: ['admin'] },
+      { name: 'Cài Đặt', href: '/settings', icon: Settings, badge: 'Cấu Hình', roles: ['admin'] },
     ]
   },
 ];
@@ -195,13 +188,13 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const getDefaultExpanded = () => {
     switch (userRole) {
       case 'admin':
-        return ['User Management', 'Vocabulary', 'Exam System'];
+        return ['Quản Lý Người Dùng', 'Từ Vựng', 'Hệ Thống Kiểm Tra'];
       case 'teacher':
-        return ['Student Management', 'Vocabulary', 'Exam System'];
+        return ['Quản Lý Học Sinh', 'Từ Vựng', 'Hệ Thống Kiểm Tra'];
       case 'student':
-        return ['Vocabulary', 'Exam System', 'Learning Paths'];
+        return ['Từ Vựng', 'Hệ Thống Kiểm Tra', 'Lộ Trình Học'];
       default:
-        return ['Vocabulary', 'Exam System'];
+        return ['Từ Vựng', 'Hệ Thống Kiểm Tra'];
     }
   };
 
@@ -253,7 +246,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <p className="text-xs text-slate-400">
                 {(() => {
                   const roleStr = typeof user?.role === 'string' ? user?.role : (user?.role as any)?.roleName || 'Admin';
-                  return `${roleStr.charAt(0).toUpperCase() + roleStr.slice(1).toLowerCase()} Dashboard`;
+                  return `${roleStr === 'admin' ? 'Quản Trị Viên' : roleStr === 'teacher' ? 'Giáo Viên' : roleStr === 'student' ? 'Học Sinh' : 'Người Dùng'} Dashboard`;
                 })()}
               </p>
             </div>
