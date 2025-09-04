@@ -24,7 +24,11 @@ export default function VocabularyTopics() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showBulkVocabModal, setShowBulkVocabModal] = useState(false);
+  const [showVocabListModal, setShowVocabListModal] = useState(false);
   const [editingTopic, setEditingTopic] = useState<VocabularyTopic | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<VocabularyTopic | null>(null);
+  const [topicVocabularies, setTopicVocabularies] = useState<Vocabulary[]>([]);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -35,6 +39,14 @@ export default function VocabularyTopics() {
     isActive: true
   });
   const [formLoading, setFormLoading] = useState(false);
+  
+  // Bulk vocabulary form state
+  const [bulkVocabData, setBulkVocabData] = useState('');
+  const [bulkVocabLoading, setBulkVocabLoading] = useState(false);
+  
+  // Vocabulary list modal state
+  const [vocabSearchTerm, setVocabSearchTerm] = useState('');
+  const [vocabLoading, setVocabLoading] = useState(false);
 
   useEffect(() => {
     loadTopics();
@@ -161,6 +173,86 @@ export default function VocabularyTopics() {
         console.error('Error deleting topic:', error);
         alert('Error deleting topic. Please try again.');
       }
+    }
+  };
+
+  const handleBulkVocabularies = (topic: VocabularyTopic) => {
+    setSelectedTopic(topic);
+    setBulkVocabData('');
+    setShowBulkVocabModal(true);
+  };
+
+  const handleViewVocabularies = async (topic: VocabularyTopic) => {
+    setSelectedTopic(topic);
+    setVocabSearchTerm('');
+    setShowVocabListModal(true);
+    
+    // Load vocabularies for this topic
+    setVocabLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8001/vocabularies/topic/${topic.id}`);
+      const result = await response.json();
+      
+      if (response.ok) {
+        setTopicVocabularies(result.data || []);
+      } else {
+        console.error('Error loading vocabularies:', result);
+        setTopicVocabularies([]);
+      }
+    } catch (error) {
+      console.error('Error loading vocabularies:', error);
+      setTopicVocabularies([]);
+    } finally {
+      setVocabLoading(false);
+    }
+  };
+
+  const handleBulkVocabSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTopic || !bulkVocabData.trim()) return;
+
+    setBulkVocabLoading(true);
+    
+    try {
+      // Parse the bulk data (expecting format: "word1|meaning1|type1|difficulty1\nword2|meaning2|type2|difficulty2")
+      const lines = bulkVocabData.trim().split('\n').filter(line => line.trim());
+      const vocabularies = lines.map(line => {
+        const parts = line.split('|').map(part => part.trim());
+        return {
+          englishWord: parts[0] || '',
+          vietnameseMeaning: parts[1] || '',
+          wordType: parts[2] || null,
+          difficultyLevel: parts[3] || 'Easy',
+          pronunciation: parts[4] || null,
+          image: parts[5] || null,
+          audioFile: parts[6] || null,
+        };
+      });
+
+      // Call the bulk create API
+      const response = await fetch(`http://localhost:8001/vocabulary-topics/${selectedTopic.id}/vocabularies/bulk`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vocabularies }),
+      });
+
+      const result = await response.json();
+      
+      if (response.ok) {
+        alert(`Đã thêm thành công ${result.data.created} từ vựng. Bỏ qua ${result.data.skipped} từ trùng lặp.`);
+        setShowBulkVocabModal(false);
+        setBulkVocabData('');
+        await loadVocabularies(); // Reload vocabularies
+      } else {
+        alert('Lỗi khi thêm từ vựng: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error adding bulk vocabularies:', error);
+      alert('Lỗi khi thêm từ vựng. Vui lòng thử lại.');
+    } finally {
+      setBulkVocabLoading(false);
     }
   };
 
@@ -301,8 +393,27 @@ export default function VocabularyTopics() {
                       <Button
                         size="sm"
                         variant="ghost"
+                        onClick={() => handleViewVocabularies(topic)}
+                        className="h-8 w-8 p-0 hover:bg-purple-50"
+                        title="Xem tất cả từ vựng"
+                      >
+                        <Book className="h-4 w-4 text-purple-600" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleBulkVocabularies(topic)}
+                        className="h-8 w-8 p-0 hover:bg-green-50"
+                        title="Thêm từ vựng hàng loạt"
+                      >
+                        <Plus className="h-4 w-4 text-green-600" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         onClick={() => handleEdit(topic)}
                         className="h-8 w-8 p-0 hover:bg-blue-50"
+                        title="Chỉnh sửa chủ đề"
                       >
                         <Edit className="h-4 w-4 text-blue-600" />
                       </Button>
@@ -311,6 +422,7 @@ export default function VocabularyTopics() {
                         variant="ghost"
                         onClick={() => handleDelete(topic.id)}
                         className="h-8 w-8 p-0 hover:bg-red-50"
+                        title="Xóa chủ đề"
                       >
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>
@@ -462,6 +574,196 @@ export default function VocabularyTopics() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Vocabulary Modal */}
+      {showBulkVocabModal && selectedTopic && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">
+              Thêm từ vựng hàng loạt - {selectedTopic.topicName}
+            </h2>
+            
+            <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-2">Hướng dẫn nhập dữ liệu:</h3>
+              <p className="text-blue-800 text-sm mb-2">
+                Mỗi dòng là một từ vựng, các thông tin cách nhau bằng dấu "|"
+              </p>
+              <p className="text-blue-800 text-sm">
+                <strong>Định dạng:</strong> Từ tiếng Anh | Nghĩa tiếng Việt | Loại từ | Độ khó | Phát âm | Hình ảnh | Audio
+              </p>
+              <p className="text-blue-800 text-sm mt-2">
+                <strong>Ví dụ:</strong><br/>
+                hello | xin chào | Noun | Easy | /həˈloʊ/ | | |<br/>
+                beautiful | đẹp | Adjective | Medium | /ˈbjuːtɪfəl/ | | |
+              </p>
+            </div>
+            
+            <form onSubmit={handleBulkVocabSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="bulkVocabData">Dữ liệu từ vựng *</Label>
+                <textarea
+                  id="bulkVocabData"
+                  value={bulkVocabData}
+                  onChange={(e) => setBulkVocabData(e.target.value)}
+                  placeholder="Nhập từ vựng theo định dạng trên..."
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
+                  rows={12}
+                  required
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setShowBulkVocabModal(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Hủy Bỏ
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600"
+                  disabled={bulkVocabLoading || !bulkVocabData.trim()}
+                >
+                  {bulkVocabLoading ? 'Đang thêm...' : 'Thêm từ vựng'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Vocabulary List Modal */}
+      {showVocabListModal && selectedTopic && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                Từ vựng - {selectedTopic.topicName}
+              </h2>
+              <Button
+                onClick={() => setShowVocabListModal(false)}
+                variant="outline"
+                size="sm"
+              >
+                Đóng
+              </Button>
+            </div>
+            
+            {/* Search */}
+            <div className="mb-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <Input
+                  placeholder="Tìm kiếm từ vựng..."
+                  value={vocabSearchTerm}
+                  onChange={(e) => setVocabSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {/* Vocabulary List */}
+            {vocabLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="p-4">
+                      <div className="h-4 bg-slate-200 rounded mb-2"></div>
+                      <div className="h-3 bg-slate-200 rounded mb-2"></div>
+                      <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                {topicVocabularies
+                  .filter(vocab => 
+                    vocab.englishWord?.toLowerCase().includes(vocabSearchTerm.toLowerCase()) ||
+                    vocab.vietnameseMeaning?.toLowerCase().includes(vocabSearchTerm.toLowerCase())
+                  )
+                  .map((vocab) => (
+                    <Card key={vocab.id} className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-slate-900 text-lg">
+                              {vocab.englishWord}
+                            </h3>
+                            {vocab.pronunciation && (
+                              <p className="text-slate-600 text-sm italic">
+                                /{vocab.pronunciation}/
+                              </p>
+                            )}
+                          </div>
+                          <Badge 
+                            variant={vocab.difficultyLevel === 'Easy' ? 'success' : 
+                                   vocab.difficultyLevel === 'Medium' ? 'warning' : 'destructive'}
+                            className="text-xs"
+                          >
+                            {vocab.difficultyLevel}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-slate-700 mb-2">
+                          {vocab.vietnameseMeaning}
+                        </p>
+                        
+                        {vocab.wordType && (
+                          <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <Tag className="h-3 w-3" />
+                            <span>{vocab.wordType}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!vocabLoading && topicVocabularies.length === 0 && (
+              <div className="text-center py-12">
+                <Book className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-600 mb-2">
+                  Chưa có từ vựng nào
+                </h3>
+                <p className="text-slate-500 mb-6">
+                  Hãy thêm từ vựng cho chủ đề này
+                </p>
+                <Button
+                  onClick={() => {
+                    setShowVocabListModal(false);
+                    handleBulkVocabularies(selectedTopic);
+                  }}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Thêm từ vựng
+                </Button>
+              </div>
+            )}
+
+            {/* Stats */}
+            {topicVocabularies.length > 0 && (
+              <div className="mt-6 pt-4 border-t border-slate-200">
+                <div className="flex items-center justify-between text-sm text-slate-600">
+                  <span>
+                    Tổng: {topicVocabularies.length} từ vựng
+                  </span>
+                  <div className="flex items-center gap-4">
+                    <span>Dễ: {topicVocabularies.filter(v => v.difficultyLevel === 'Easy').length}</span>
+                    <span>Trung bình: {topicVocabularies.filter(v => v.difficultyLevel === 'Medium').length}</span>
+                    <span>Khó: {topicVocabularies.filter(v => v.difficultyLevel === 'Hard').length}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

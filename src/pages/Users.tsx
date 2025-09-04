@@ -145,7 +145,7 @@ export default function Users() {
         await userApi.deleteUser(id);
         setUsers(users.filter(u => u.id !== id));
         // Show success message
-      } catch (error) {
+    } catch (error) {
         console.error('Error deleting user:', error);
         // Show error message
       }
@@ -285,12 +285,12 @@ export default function Users() {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
+      <div>
                   <p className="text-sm font-medium text-slate-600">Người Dùng Hoạt Động</p>
                   <p className="text-3xl font-bold text-slate-900">
                     {users.filter(u => u.status === 'active').length}
-                  </p>
-                </div>
+        </p>
+      </div>
                 <div className="p-3 bg-green-100 rounded-full">
                   <Shield className="h-6 w-6 text-green-600" />
                 </div>
@@ -403,7 +403,7 @@ export default function Users() {
             {[...Array(5)].map((_, i) => (
               <Card key={i} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg animate-pulse">
                 <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4">
                     <div className="h-12 w-12 bg-slate-200 rounded-full"></div>
                     <div className="flex-1 space-y-2">
                       <div className="h-4 bg-slate-200 rounded w-1/4"></div>
@@ -577,20 +577,20 @@ export default function Users() {
                 
                 <div>
                   <Label htmlFor="status">Status *</Label>
-                  <Select
+                    <Select
                     value={formData.status}
                     onValueChange={(value) => handleInputChange('status', value as any)}
-                  >
+                    >
                     <SelectTrigger>
                       <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                       <SelectItem value="active">Active</SelectItem>
                       <SelectItem value="inactive">Inactive</SelectItem>
                       <SelectItem value="banned">Banned</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 
                 <div>
                   <Label htmlFor="avatar">Avatar URL</Label>
@@ -623,7 +623,7 @@ export default function Users() {
                 </Button>
               </div>
             </form>
-          </div>
+      </div>
         </div>
       )}
     </div>

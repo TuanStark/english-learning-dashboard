@@ -78,8 +78,8 @@ interface NavigationItem {
     icon: Book,
     roles: ['admin', 'teacher', 'student'],
     children: [
-      { name: 'Từ Vựng', href: '/vocabulary', icon: Book, badge: 'Từ', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Chủ Đề Từ Vựng', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Danh Mục', roles: ['admin', 'teacher'] },
+      // { name: 'Từ Vựng', href: '/vocabulary', icon: Book, badge: 'Từ', roles: ['admin', 'teacher', 'student'] },
+      { name: 'Quản lý Từ Vựng', href: '/vocabulary-topics', icon: FolderOpen, badge: 'Danh Mục', roles: ['admin', 'teacher'] },
       // { name: 'Vocabulary Examples', href: '/vocabulary-examples', icon: BookOpenCheck, badge: 'Usage', roles: ['admin', 'teacher'] },
     ]
   },
@@ -316,9 +316,9 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                         )} />
                         <span className="flex-1 text-left">{item.name}</span>
                         {expandedItems.includes(item.name) ? (
-                          <ChevronDown className="ml-auto h-4 w-4 text-slate-400 transition-transform duration-200" />
+                          <ChevronDown className="ml-auto h-4 w-4 text-slate-400 transition-transform duration-200 whitespace-nowrap" />
                         ) : (
-                          <ChevronRight className="ml-auto h-4 w-4 text-slate-400 transition-transform duration-200" />
+                          <ChevronRight className="ml-auto h-4 w-4 text-slate-400 transition-transform duration-200 whitespace-nowrap" />
                         )}
                       </button>
                       {expandedItems.includes(item.name) && item.children && (
@@ -345,8 +345,8 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                                     ? 'text-blue-300' 
                                     : 'text-slate-500 group-hover:text-slate-300'
                                 )} />
-                                <span className="flex-1">{child.name}</span>
-                                {child.badge && (
+                                <span className="flex-1 whitespace-nowrap">{child.name}</span>
+                                {/* {child.badge && (
                                   <span className={cn(
                                     'px-2 py-0.5 text-xs font-medium rounded-full',
                                     location.pathname === child.href
@@ -355,7 +355,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                                   )}>
                                     {child.badge}
                                   </span>
-                                )}
+                                )} */}
                               </Link>
                             </li>
                           ))}
