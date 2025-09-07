@@ -337,11 +337,25 @@ export default function Grammar() {
       if (editingExam) {
         // Update exam
         const response = await examApi.updateExam(editingExam.id, examData);
+        if (response) {
+          addToast({
+            type: 'success',
+            title: 'Thành công!',
+            description: 'Cập nhật bài thi ngữ pháp thành công!'
+          });
+        }
         await loadGrammarExams();
         setShowExamModal(false);
       } else {
         // Create exam
         const response = await examApi.createExam(examData);
+        if (response) {
+          addToast({
+            type: 'success',
+            title: 'Thành công!',
+            description: 'Tạo bài thi ngữ pháp thành công!'
+          });
+        }
         await loadGrammarExams();
         setShowExamModal(false);
       }
@@ -375,6 +389,13 @@ export default function Grammar() {
           isActive: questionForm.isActive
         };
         const response = await questionApi.updateQuestion(editingQuestion.id, questionData);
+        if (response) {
+          addToast({
+            type: 'success',
+            title: 'Thành công!',
+            description: 'Cập nhật câu hỏi thành công!'
+          });
+        }
         setShowQuestionModal(false);
       } else {
         // Create question
@@ -388,7 +409,13 @@ export default function Grammar() {
         };
         
         const response = await questionApi.createQuestion(questionData);
-        
+        if (response) {
+          addToast({
+            type: 'success',
+            title: 'Thành công!',
+            description: 'Tạo câu hỏi thành công!'
+          });
+        }
         // Get question ID from response
         const questionId = (response as any)?.id || (response as any)?.data?.id;
         
@@ -409,7 +436,6 @@ export default function Grammar() {
             }
           }
         }
-        
         setShowQuestionModal(false);
       }
     } catch (error: any) {

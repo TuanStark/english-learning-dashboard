@@ -5,9 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Upload, FileText, Users, HelpCircle, Download, CheckCircle, AlertCircle, Info } from 'lucide-react';
 
 export function ImportDemo() {
-  const [vocabularyImportOpen, setVocabularyImportOpen] = useState(false);
-  const [examImportOpen, setExamImportOpen] = useState(false);
-  const [userImportOpen, setUserImportOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importProgress, setImportProgress] = useState(0);
   const [importStatus, setImportStatus] = useState<'idle' | 'importing' | 'success' | 'error'>('idle');
@@ -28,7 +25,7 @@ export function ImportDemo() {
     }
   };
 
-  const handleImport = async (importType: string) => {
+  const handleImport = async () => {
     if (!selectedFile) {
       alert('Vui lòng chọn file để import!');
       return;
@@ -60,7 +57,7 @@ export function ImportDemo() {
     }, 2000);
   };
 
-  const downloadTemplate = (type: string) => {
+  const downloadTemplate = () => {
     // Simulate download template
     const templates = {
       vocabulary: 'englishWord,vietnameseMeaning,pronunciation,wordType,difficultyLevel\nhello,xin chào,/həˈloʊ/,Interjection,Easy\nbeautiful,đẹp,/ˈbjuːtɪfəl/,Adjective,Medium',
@@ -68,11 +65,11 @@ export function ImportDemo() {
       user: 'email,fullName,roleId,phoneNumber,address\njohn@example.com,John Doe,2,+1234567890,123 Main St\njane@example.com,Jane Smith,1,+1234567891,456 Oak Ave'
     };
 
-    const blob = new Blob([templates[type as keyof typeof templates]], { type: 'text/csv' });
+    const blob = new Blob([templates.vocabulary], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${type}_template.csv`;
+    a.download = `template.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -163,7 +160,7 @@ export function ImportDemo() {
           {/* Action Buttons */}
           <div className="flex gap-2">
             <Button 
-              onClick={() => downloadTemplate(importType)}
+              onClick={() => downloadTemplate()}
               variant="outline" 
               size="sm"
               className="flex-1"
@@ -172,7 +169,7 @@ export function ImportDemo() {
               Mẫu file
             </Button>
             <Button 
-              onClick={() => handleImport(importType)}
+              onClick={() => handleImport()}
               disabled={!selectedFile || importStatus === 'importing'}
               className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >

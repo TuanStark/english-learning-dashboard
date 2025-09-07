@@ -25,7 +25,6 @@ export default function Exams() {
   const [activeTab, setActiveTab] = useState<TabType>('exams');
   const [loading, setLoading] = useState(true);
   const [exams, setExams] = useState<Exam[]>([]);
-    const [questions, setQuestions] = useState<Question[]>([]);
   const [answerOptions, setAnswerOptions] = useState<AnswerOption[]>([]);
   const [currentExamQuestions, setCurrentExamQuestions] = useState<Question[]>([]);
  
@@ -263,13 +262,6 @@ export default function Exams() {
     console.log('🧹 clearAnswerOptionsCache called');
     setAnswerOptionsCache(new Map());
     console.log('💾 Cleared answerOptionsCache');
-  };
-  
-  // Refresh cache when needed
-  const refreshAnswerOptionsCache = async () => {
-    console.log('🔄 refreshAnswerOptionsCache called');
-    await loadAllAnswerOptions();
-    console.log('✅ Refreshed answerOptionsCache');
   };
   
   // Force refresh answer options for a specific question
