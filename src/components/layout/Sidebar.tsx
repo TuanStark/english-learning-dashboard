@@ -91,9 +91,9 @@ interface NavigationItem {
     roles: ['admin', 'teacher', 'student'],
     children: [
       { name: 'Bài Kiểm Tra', href: '/exams', icon: FileText, badge: 'Kiểm Tra', roles: ['admin', 'teacher', 'student'] },
-      { name: 'Câu Hỏi', href: '/questions', icon: HelpCircle, badge: 'Câu Hỏi', roles: ['admin', 'teacher'] },
-      { name: 'Đáp Án', href: '/answer-options', icon: CheckSquare, badge: 'Đáp Án', roles: ['admin', 'teacher'] },
-      { name: 'Lần Thi', href: '/exam-attempts', icon: Target, badge: 'Kết Quả', roles: ['admin', 'teacher', 'student'] },
+      // { name: 'Câu Hỏi', href: '/questions', icon: HelpCircle, badge: 'Câu Hỏi', roles: ['admin', 'teacher'] },
+      // { name: 'Đáp Án', href: '/answer-options', icon: CheckSquare, badge: 'Đáp Án', roles: ['admin', 'teacher'] },
+      // { name: 'Lần Thi', href: '/exam-attempts', icon: Target, badge: 'Kết Quả', roles: ['admin', 'teacher', 'student'] },
     ]
   },
 
