@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/hooks/useAuth';
 import { ThemeProvider } from '@/hooks/useTheme';
+import { ToastProvider } from '@/components/ui/toast';
 import { AuthWrapper } from '@/components/AuthWrapper';
 import { Layout } from '@/components/layout/Layout';
 import Login from '@/pages/Login';
@@ -28,7 +29,8 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
+        <ToastProvider>
+          <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
@@ -80,7 +82,8 @@ function App() {
               <Route path="import-demo" element={<ImportDemo />} />
             </Route>
           </Routes>
-        </Router>
+          </Router>
+        </ToastProvider>
       </AuthProvider>
     </ThemeProvider>
   );

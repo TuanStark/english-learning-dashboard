@@ -52,7 +52,7 @@ export interface Exam {
   id: number;
   title: string;
   description?: string;
-  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM";
+  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM" | "GRAMMAR";
   duration: number;
   difficulty: "Easy" | "Medium" | "Hard";
   isActive: boolean;
@@ -60,19 +60,23 @@ export interface Exam {
   updatedAt: string;
   questions?: Question[];
   examAttempts?: ExamAttempt[];
+  grammarId?: number; // Liên kết với Grammar nếu type = GRAMMAR
 }
 
 // Question
 export interface Question {
   id: number;
   examId: number;
+  grammarId?: number; // Liên kết với Grammar
   content: string;
   questionType: string;
   orderIndex: number;
   points: number;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
   answerOptions?: AnswerOption[];
+  grammar?: Grammar; // Thông tin Grammar liên kết
 }
 
 // Answer Option
@@ -144,6 +148,7 @@ export interface Grammar {
   createdAt: string;
   updatedAt: string;
   examples?: GrammarExample[];
+  questions?: Question[]; // Bài tập liên kết với Grammar
 }
 
 // Grammar Example
@@ -153,6 +158,7 @@ export interface GrammarExample {
   englishSentence: string;
   vietnameseSentence: string;
   explanation?: string;
+  audioFile?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -185,10 +191,11 @@ export interface CreateVocabularyDto {
 export interface CreateExamDto {
   title: string;
   description?: string;
-  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM";
+  type?: "TOEIC" | "IELTS" | "SAT" | "CUSTOM" | "GRAMMAR";
   duration: number;
   difficulty: "Easy" | "Medium" | "Hard";
   isActive: boolean;
+  grammarId?: number; // Liên kết với Grammar nếu type = GRAMMAR
 }
 
 export interface CreateGrammarDto {
