@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Vocabulary as VocabularyType, VocabularyTopic } from '@/types';
+import type { Vocabulary as VocabularyType, VocabularyTopic } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
-import { vocabularyService } from '@/services/vocabulary';
+import { vocabularyApi } from '@/services/api';
 
 interface VocabularyFormProps {
   vocabulary?: VocabularyType;
@@ -47,8 +47,11 @@ export function VocabularyForm({ vocabulary, open, onOpenChange, onSubmit }: Voc
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await vocabularyService.getVocabularyTopics();
-        setTopics(response.data);
+        const response = await vocabularyApi.getTopics();
+        const topics = Array.isArray(response.data) && !Array.isArray(response.data[0]) 
+          ? response.data as VocabularyTopic[] 
+          : [];
+        setTopics(topics);
       } catch (error) {
         console.error('Failed to fetch topics:', error);
       }

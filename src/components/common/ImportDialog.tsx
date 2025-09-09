@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VocabularyTopic } from '@/types';
+import type { VocabularyTopic } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -44,7 +44,7 @@ export function ImportDialog({
   const [selectedTopicId, setSelectedTopicId] = useState<number | undefined>();
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const handleFileUpload = async (file: File, options: any) => {
     setLoading(true);

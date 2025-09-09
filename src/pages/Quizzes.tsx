@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Exam, PaginationParams } from '@/types';
-import { examsService } from '@/services/exams';
+import type { Exam, PaginationParams } from '@/types';
+import { examApi } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,9 +53,15 @@ export function Quizzes() {
         search: searchTerm || undefined,
       };
 
-      const response = await examsService.getExams(params);
-      setExams(response.data);
-      setPagination(response.pagination);
+      const response = await examApi.getExams(params);
+      const data = Array.isArray(response.data) ? response.data[0] : response.data;
+      setExams(data.data);
+      setPagination({
+        page: data.page,
+        limit: data.limit,
+        total: data.total,
+        totalPages: data.totalPages,
+      });
     } catch (error) {
       console.error('Failed to fetch exams:', error);
     } finally {
@@ -69,7 +75,7 @@ export function Quizzes() {
     }
 
     try {
-      await examsService.deleteExam(examId);
+      await examApi.deleteExam(examId);
       await fetchExams();
     } catch (error) {
       console.error('Failed to delete exam:', error);

@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Upload, FileText, AlertCircle, CheckCircle, Loader2, Download } from 'lucide-react';
+import { Upload, AlertCircle, CheckCircle, Loader2, Download } from 'lucide-react';
 
 interface FileUploadProps {
   open: boolean;

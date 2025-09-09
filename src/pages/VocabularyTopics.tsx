@@ -190,7 +190,7 @@ export default function VocabularyTopics() {
     // Load vocabularies for this topic
     setVocabLoading(true);
     try {
-      const response = await fetch(`http://localhost:8001/vocabularies/topic/${topic.id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/vocabularies/topic/${topic.id}`);
       const result = await response.json();
       
       if (response.ok) {
@@ -230,7 +230,7 @@ export default function VocabularyTopics() {
       });
 
       // Call the bulk create API
-      const response = await fetch(`http://localhost:8001/vocabulary-topics/${selectedTopic.id}/vocabularies/bulk`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8001'}/vocabulary-topics/${selectedTopic.id}/vocabularies/bulk`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
